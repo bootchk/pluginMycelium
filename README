@@ -1,0 +1,49 @@
+
+Gimp Mycelium Plugin
+
+Copyright 2013 Lloyd Konneker
+
+Licensed under GPLv3
+
+
+This is unreleased work in progress.
+
+
+About
+=====
+
+A Gimp plugin that renders an image as mycelium, or threads, or wire.
+
+Generates a new, black and white image from any color or grayscale image.
+
+It ignores the selection and renders the entire image.
+
+Uses cellular automata paradigm.
+
+
+Derivation
+==========
+
+Derived from open source written by Pavol Rusnak (source on GitHub) which was in turn derived from work by Ryan Alexander.
+
+
+Structure
+=========
+
+plugin_mycelium.py is the 'main' of the plugin, that GIMP finds in it's plugin directory.
+It is just a shell, most of the action is in the Python package pluginMycelium which it imports from the same directory.
+
+In the package, myceliumGimpPlugin.py is the 'main'.  Other files define classes that it uses.
+
+
+Dependencies
+============
+
+This is a Gimp plugin, so it only works installed as a plugin in Gimp.
+
+This requires the Pixmap package (which I also wrote, and its on Github too.)  
+It needs to be installed alongside this
+(not in the normal Python way, but in the same directory as Gimp Python plugins.)
+
+
+
