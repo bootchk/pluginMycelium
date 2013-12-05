@@ -31,7 +31,7 @@ class Food(object):
       if result > 0:
         self.updateFoodAt(position, result)
         self.eats += 1
-        print("Ate", result, " at ", position)
+        ##print("Ate", result, " at ", position)
     return result
 
 
@@ -78,7 +78,8 @@ class Food(object):
     
     
   def isMostlyGone(self):
-    return self.eats > ( self.places * .75 )
+    # TODO this is not guaranteed to terminate
+    return self.eats > ( self.places * 1 )
   
   
     

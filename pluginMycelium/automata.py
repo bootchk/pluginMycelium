@@ -73,7 +73,7 @@ class Automata(object):
     return self.healthState == 0
   
   def setStarved(self):
-    print("Starved", self.position)
+    ##print("Starved", self.position)
     self.healthState = 0
   
   
@@ -99,11 +99,12 @@ class Automata(object):
   def migrate(self):
     '''
     To pixel farther away, in a random direction.
-    '''
     
+    TODO this should be a fraction of the image size
+    '''
     randomCoord = Coord(random.randint(-15, 15), random.randint(-15, 15))
     self.position = self.position + randomCoord
-    print("migrate to", self.position)
+    ##print("migrate to", self.position)
     
   
   def changeDirection(self):
@@ -150,19 +151,36 @@ class Automata(object):
     ''' 
     Artifact of metabolism i.e. eating.
     
-    Self need not be starved.  But may not be eating.
+    Self need not be starved.  But might not have just eaten (meal might be 0.)
     Self may be healthy but wandered off field.
     
     Whether current position has food, is on the field, etc. depends on the order in which sub-behaviours are called.
+    
+    TODO meal is what I consumed this period, not what is in my gut from last period.
     '''
     # if self.isEating():
     
     '''
     Note we may have just eaten, but could still be starved, if we did not eat enough to equal our daily metabolism.
-    Note this is ignoring meal, and we may be depositing more than the meal (yesterday's meal.)
+    '''
+    self._poopMealIfNotStarved(meal)
+    
+    
+  # Alternative 1
+  def _poopMealIfNotStarved(self, meal):
+    '''
+    Poop meal if not starved.
+    Not true to life as we know it:
+    - should poop yesterday's meal.
+    - should poop if gut is not empty, regardless of starving state
     '''
     if not self.isStarved():
       # !!! Cannot assert: not isClipped(self.position)
-      self.field.artifacts.depositAt(self.position)
+      self.field.artifacts.depositAt(self.position, amount=meal)
       
+  # Alternative 2
+  # TODO
+  # def _poopNonemptyGut
+  
+  
     
