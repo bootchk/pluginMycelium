@@ -19,7 +19,7 @@ Generates a new, grayscale image from any color or grayscale image.
 
 Ignores the selection and renders the entire input image.
 
-Uses cellular automata paradigm.
+Uses worm automata paradigm.
 
 
 Derivation
@@ -50,7 +50,7 @@ Copy to the normal Gimp plugin directory for your platform:
 You 'install' the packages in the same directory as Gimp Python plugins.
 (Not in the normal Python way; the packages do not yet include setup.py.)
 
-(For example, the normal Gimp plugin directory, for 3rd party plugins, on Linux, is ~/.gimp2.8/plug-ins)
+(For example, the normal Gimp plugin directory, for 3rd party plugins, on Linux, is ~/.gimp-2.8/plug-ins)
 
 Dependencies
 ============

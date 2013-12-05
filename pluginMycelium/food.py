@@ -78,7 +78,7 @@ class Food(object):
     
     
   def isMostlyGone(self):
-    return self.eats > ( self.places / 2 )
+    return self.eats > ( self.places * .75 )
   
   
     

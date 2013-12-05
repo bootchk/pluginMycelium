@@ -108,7 +108,7 @@ class Automata(object):
   
   def changeDirection(self):
     '''
-    Direction changes from diagonally left of current direction to diagonally right of current direction.
+    Random direction change from set [ diagonally left of current direction, diagonally right of current direction]
     (Not hard left, or reverse.)
     '''
     self.direction.tweak()
@@ -123,8 +123,8 @@ class Automata(object):
   def divide(self):
     ''' 
     Spawn a new automata.
-    
     '''
+    
     # Divide self's health evenly
     self.healthState /= 2 # integer divide
     

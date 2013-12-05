@@ -8,16 +8,21 @@ class Direction(object):
   '''
   A direction a automata can move.
   Limited to 8 cardinal directions, to each adjacent pixel.
+  
+  Inconsequential orientation of axis: that x increases to right, y increases down.
+  
+  TODO: for Paterson's worms, only 6 directions.
+  I.E. consider the grid triangularly connected.
   '''
   
-  unitCoords = [Coord(1,1),  # NE
-                Coord(0,1),  # N
-                Coord(1,0),  # NW
-                Coord(-1,0), # W
-                Coord(-1,1), # SW
-                Coord(0,-1),# S 
-                Coord(-1,-1), # SE
-                Coord(0,-1),  # E
+  unitCoords = [Coord( 1,-1),  # NE
+                Coord( 0,-1),  # N
+                Coord(-1,-1),  # NW
+                Coord(-1, 0),  # W
+                Coord(-1, 1),  # SW
+                Coord( 0, 1),  # S 
+                Coord( 1, 1),  # SE
+                Coord( 1, 0),  # E
                 ]
   
   
@@ -31,17 +36,15 @@ class Direction(object):
   
   def tweak(self):
     ''' Change direction slightly, to next or previous. '''
-    choice = random.choice([True, False])
-    if choice:
-      self.index += 1
-    else:
-      self.index -= 1
+    choice = random.choice([1, -1])
+    self.index += choice
     self.index = self.index % 8 # modulo
   
   
   def unitCoordFor(self):
-    ''' Coord to add to another Coord. '''
+    ''' Direction's Coord, that can be added to another Coord. '''
     return Direction.unitCoords[self.index]
+  
   
   def setOpposite(self, other):
     ''' Set self opposite to other. '''
