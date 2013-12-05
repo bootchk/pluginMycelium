@@ -13,15 +13,22 @@ from config import HEALTH_DAILY_METABOLISM as HEALTH_DAILY_METABOLISM
 
 
   
-class Cell(object):
-  ''' Cellular automata '''
+class Automata(object):
+  ''' 
+  Worm automata: it moves.  
+  Contrast with cellular automata, where each automata is usually stationary (on a cell of a grid.)
+  A worm automata is like a single-celled, motile, biological organism.
+  
+  See 'Patterson worms', which move in only 6 directions on a triangular grid.
+  Here, each worm can move in 8 directions on a rectangular grid.
+  '''
   
   
   def __init__(self, position, field, direction=None, health=None):
     assert position is not None
     assert field is not None
     self.position = copy(position) # !!! copy
-    self.field = field  # a cell knows its field
+    self.field = field  # a automata knows its field
     if health is None:
       self.healthState = 0
     else:
@@ -97,7 +104,7 @@ class Cell(object):
       
   def divide(self):
     ''' 
-    Spawn a new cell.
+    Spawn a new automata.
     
     '''
     # Divide self's health evenly
@@ -108,12 +115,12 @@ class Cell(object):
     self.direction = left
     
     # Parent and child in same position.
-    newCell = Cell(position=self.position, field=self.field, health=self.healthState, direction=right)
+    newAutomata = Automata(position=self.position, field=self.field, health=self.healthState, direction=right)
     
     ## ALTERNATIVE  child move in opposite direction
-    ## newCell.direction.setOpposite(self.direction)
+    ## newAutomata.direction.setOpposite(self.direction)
     
-    self.field.appendCell(newCell)
+    self.field.append(newAutomata)
   
     
   def tryMigrate(self):

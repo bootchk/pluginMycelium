@@ -14,9 +14,10 @@ About
 
 A Gimp plugin that renders an image as mycelium, or threads, or wire.
 
-Generates a new, black and white image from any color or grayscale image.
+Generates a new, grayscale image from any color or grayscale image.
+(But the grayscale image will only have two values: black and white.)
 
-It ignores the selection and renders the entire image.
+Ignores the selection and renders the entire input image.
 
 Uses cellular automata paradigm.
 
@@ -36,14 +37,28 @@ It is just a shell, most of the action is in the Python package pluginMycelium w
 In the package, myceliumGimpPlugin.py is the 'main'.  Other files define classes that it uses.
 
 
+
+Installing
+==========
+
+Copy to the normal Gimp plugin directory for your platform:
+
+- the file plugin_mycelium.py	(a GIMP plugin written in Python)
+- the directory pluginMycelium	(a Python package)
+- the directory pixmap			(a Python package)
+
+You 'install' the packages in the same directory as Gimp Python plugins.
+(Not in the normal Python way; the packages do not yet include setup.py.)
+
+(For example, the normal Gimp plugin directory, for 3rd party plugins, on Linux, is ~/.gimp2.8/plug-ins)
+
 Dependencies
 ============
 
-This is a Gimp plugin, so it only works installed as a plugin in Gimp.
+This is a Gimp plugin, so it only works installed as a plugin for Gimp.
 
-This requires the Pixmap package (which I also wrote, and its on Github too.)  
-It needs to be installed alongside this
-(not in the normal Python way, but in the same directory as Gimp Python plugins.)
-
+This plugin is not a single file (like many other plugins) but requires two other Python packages:
+- pluginMycelium (the engine for this plugin)
+- pixmap (another Python package, which I also wrote, and its on Github too.)
 
 

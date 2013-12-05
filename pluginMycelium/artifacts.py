@@ -25,7 +25,7 @@ class Artifacts(object):
     
   def incrementArtifact(self, position):
     '''
-    Artifacts analog, slowly build up as cells metabolize.
+    Artifacts analog, slowly build up as automatas metabolize.
     '''
     # Decrement by 1: Gimp is a brightness 'value' where larger is whiter
     currentArtifact = self.pixmap[position][0]

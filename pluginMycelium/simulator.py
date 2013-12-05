@@ -5,7 +5,7 @@
 from gimpfu import *
 
 
-class CellularAutomataSimulator(object):
+class AutomataSimulator(object):
   '''
   '''
   
@@ -18,17 +18,17 @@ class CellularAutomataSimulator(object):
   def simulate(self):
     '''
     Simulation loop.
-    Simulate time periods until no cell is eating.
+    Simulate time periods until termination condition.
     '''
-    while True: # simulation periods until no more food
-      someCellEating = False
+    # Python idiom for do until
+    while True:
       self.generationCount += 1
-      for cell in self.field.cellGenerator():
-        cell.live()
-        if cell.isEating():
-          someCellEating = True
-      if not someCellEating:
+      for automata in self.field.automataGenerator():
+        automata.live()
+        
+      if self.field.isTerminal():
         break
+      
       # TODO if animated
       self.flush()
       print(">>>>>>>>>>>>>>>>Generation ", self.generationCount)

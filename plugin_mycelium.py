@@ -21,7 +21,7 @@ def pluginMain(image, drawable, foo):
 
 register(
         "python_fu_mycelium",
-        "Render black and white using mycelium cellular automata.",
+        "Render black and white using mycelium (worm automata.)",
         "Make the specified layer look like it is printed on cloth",
         "James Henstridge",
         "James Henstridge",

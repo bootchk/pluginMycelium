@@ -6,7 +6,7 @@ from pixmap.coord import Coord
 
 class Direction(object):
   '''
-  A direction a cell can move.
+  A direction a automata can move.
   Limited to 8 cardinal directions, to each adjacent pixel.
   '''
   

@@ -6,9 +6,9 @@ from gimpfu import *
 
 from pixmap.pixmap import Pixmap
 
-from simulator import CellularAutomataSimulator
+from simulator import AutomataSimulator
 from frame import Frame
-from cell import Cell
+from automata import Automata
 from food import Food
 from artifacts import Artifacts
 from field import Field
@@ -28,12 +28,12 @@ def myceliumGimpPlugin(image, drawable, foo):
   frame=Frame( drawable.width, drawable.height )
   field=Field(food=food, artifacts=artifacts)
   
-  # Populate one cell
+  # Populate one automata
   # If the center has no food the simulation will stop immediately?
-  cell = Cell(position=frame.center(), field=field)
-  field.appendCell(cell)
+  automata = Automata(position=frame.center(), field=field)
+  field.append(automata)
   
-  simulator = CellularAutomataSimulator(frame=frame, field=field)
+  simulator = AutomataSimulator(frame=frame, field=field)
   simulator.simulate()
   simulator.flush()
   
@@ -52,7 +52,7 @@ def createGrayPixmapFromInImage(image):
   activeLayer = pdb.gimp_image_get_active_drawable(grayscaleImage)
   
   # !!! Invert it: convert black as small value to large value (of food.)
-  # I.E. cells consume black, and poop black
+  # I.E. automatas consume black, and poop black
   pdb.gimp_invert(activeLayer)
   
   grayPixmap = Pixmap(activeLayer)
