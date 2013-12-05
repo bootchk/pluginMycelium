@@ -12,10 +12,12 @@ class Food(object):
   Wraps a grayscale pixmap (value of gray is the amount of food.)
   '''
   
-  
-  
   def __init__(self, pixmap):
     self.pixmap = pixmap
+    self.eats = 0
+    
+    # Count places that might have food
+    self.places = pixmap.width * pixmap.height
 
 
   def eat(self, position):
@@ -28,6 +30,7 @@ class Food(object):
       result = self.whatICanEatAt(position)
       if result > 0:
         self.updateFoodAt(position, result)
+        self.eats += 1
         print("Ate", result, " at ", position)
     return result
 
@@ -63,6 +66,7 @@ class Food(object):
     '''
     return self.pixmap[position][0]
   
+  
   def updateFoodAt(self, position, consumed):
     '''
     Consume food.  
@@ -72,4 +76,9 @@ class Food(object):
     remainingFood = self.foodAt(position) - consumed
     self.pixmap[position] = array('B', (remainingFood, ))
     
+    
+  def isMostlyGone(self):
+    return self.eats > ( self.places / 2 )
+  
+  
     

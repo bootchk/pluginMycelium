@@ -16,11 +16,20 @@ class Artifacts(object):
 
   def depositAt(self, position):
     '''
+    In this design, an automata may wander off the field.
+    So the poop here is from yesterday's meal (today's metabolism) even though we might not have eaten.
+    Note an automata can't stay healthy very long off the field.
     '''
     if not self.pixmap.isClipped(position):
+      print("depositAt", position)
       self.maximizeArtifact(position)
     else:
+      '''
+      !!! A deposit off the field dissappears from view, but is not a RuntimeError
       raise RuntimeError, "Wandered off field, should not be metabolizing"
+      '''
+      print("Deposit off the field.")
+      pass
     
     
   def incrementArtifact(self, position):

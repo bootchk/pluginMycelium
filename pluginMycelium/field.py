@@ -35,8 +35,24 @@ class Field(object):
     for automata in automataCopy:
       yield automata
   
-  def isCrowded(self):
-    return len(self.automata) < MAX_POPULATION_COUNT
+  
+  '''
+  Population limit implies little about density: all automata could be crowded together.
+  '''
+  def isOverPopulated(self):
+    return len(self.automata) >= MAX_POPULATION_COUNT
+  
+
+  def isTerminal(self):
+    '''
+    Generic: is conditions to end simulation?
+    
+    Specific: is most of the food gone.  (Not explicitly depend on population.)
+    
+    Many other formulations are possible.
+    The formulation: 'is every automata starved' didn't work well, ended simulation with much food remaining.
+    '''
+    return self.food.isMostlyGone()
   
   
   

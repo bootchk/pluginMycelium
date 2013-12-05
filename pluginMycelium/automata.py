@@ -19,8 +19,18 @@ class Automata(object):
   Contrast with cellular automata, where each automata is usually stationary (on a cell of a grid.)
   A worm automata is like a single-celled, motile, biological organism.
   
-  See 'Patterson worms', which move in only 6 directions on a triangular grid.
-  Here, each worm can move in 8 directions on a rectangular grid.
+  See 'Patterson worms':
+  - move only one unit, in only 6 directions on a triangular grid
+  - die if there is no food (no direction not already traversed.)
+  - only one worm exists at a time
+  
+  This is different from a Patterson worm:
+  - there can be many worms on the same field
+  - they can divide
+  - each worm can move in 8 directions on a rectangular grid.
+  - worms can move off the field (wander), and then MIGHT wander back on to the field.
+  - worms if starved can migrate (jump more than one step, in more than 8 directions), again even off the field
+  - worms if starved don't die, they continue to move and migrate (they just don't poop.)
   '''
   
   
@@ -42,13 +52,18 @@ class Automata(object):
   def live(self):
     '''
     Behaviour: do every life cycle.
+    
+    !!! It is not invariant that current position is on the field.
     '''
-    self.changeHealth()
+    # eat and poop at current position, if it is on the field !!!
+    meal = self.changeHealth() 
+    self.tryPoop(meal)
+    
     self.move()
     self.changeDirection()
     self.tryDivide()
     self.tryMigrate()
-    self.tryPoop()
+    
     
     
   def isEating(self):
@@ -65,10 +80,13 @@ class Automata(object):
   def changeHealth(self):
     '''
     Eating increases health, and just living decreases health.
+    Return size of meal eaten.
     '''
-    self.healthState += self.field.food.eat(self.position) - HEALTH_DAILY_METABOLISM
+    meal = self.field.food.eat(self.position)
+    self.healthState +=  meal - HEALTH_DAILY_METABOLISM
     if self.healthState <= 0:
       self.setStarved()
+    return meal
     
     
   def move(self):
@@ -97,8 +115,8 @@ class Automata(object):
   
   
   def tryDivide(self):
-    ''' If I am healthy enough, and the field is not too crowded, divide. '''
-    if self.healthState > HEALTH_TO_PROCREATE and not self.field.isCrowded():
+    ''' If I am healthy enough, and the field is not overpopulated, divide. '''
+    if self.healthState > HEALTH_TO_PROCREATE and not self.field.isOverPopulated():
       self.divide()
       
       
@@ -128,19 +146,23 @@ class Automata(object):
       self.migrate()
       
       
-  def tryPoop(self):
+  def tryPoop(self, meal):
     ''' 
     Artifact of metabolism i.e. eating.
     
     Self need not be starved.  But may not be eating.
     Self may be healthy but wandered off field.
     
-    Note that self moved first, so current position may have enough food to eat,
-    but current health is a result from previous positio.
+    Whether current position has food, is on the field, etc. depends on the order in which sub-behaviours are called.
     '''
     # if self.isEating():
+    
+    '''
+    Note we may have just eaten, but could still be starved, if we did not eat enough to equal our daily metabolism.
+    Note this is ignoring meal, and we may be depositing more than the meal (yesterday's meal.)
+    '''
     if not self.isStarved():
-      print("Pooped at", self.position)
+      # !!! Cannot assert: not isClipped(self.position)
       self.field.artifacts.depositAt(self.position)
       
     
