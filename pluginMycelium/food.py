@@ -3,6 +3,7 @@
 
 from array import array
 
+import config
 from config import GUT_SIZE as GUT_SIZE
 
 
@@ -14,12 +15,13 @@ class Food(object):
   
   def __init__(self, pixmap):
     self.pixmap = pixmap
-    self.eats = 0
+    self.eatenAmount = 0
     
     # Count places that might have food
     self.places = pixmap.width * pixmap.height
     
     self._totalFood = self.totalFood()
+    self._terminalEatenAmount = self._totalFood * config.terminationPercent / 100.0
 
 
 
@@ -33,7 +35,7 @@ class Food(object):
       result = self.whatICanEatAt(position)
       if result > 0:
         self.updateFoodAt(position, result)
-        self.eats += 1
+        self.eatenAmount += result
         ##print("Ate", result, " at ", position)
     return result
 
@@ -88,10 +90,11 @@ class Food(object):
     
     
   def isMostlyGone(self):
-    return self.eats > self._totalFood * 0.8
+    print("Eats", self.eatenAmount, "terminal", self._terminalEatenAmount)
+    return self.eatenAmount > self._terminalEatenAmount
   
     ## TODO this is not guaranteed to terminate
-    ## return self.eats > ( self.places * 1 )
+    ## return self.eatenAmount > ( self.places * 1 )
   
   
     

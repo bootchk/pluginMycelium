@@ -11,10 +11,16 @@ from frame import Frame
 from food import Food
 from artifacts import Artifacts
 from field import Field
-    
+import config
 
 
-def myceliumGimpPlugin(image, drawable, foo):
+def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent):
+  
+  config.startPattern = startPattern
+  config.maxPopulation = maxPopulation
+  config.squirminess = squirminess
+  config.terminationPercent = terminationPercent
+  
   
   # From image create a gray pixmap (one byte of gray value per pixel) to be food
   grayPixmap = createGrayPixmapFromInImage(image)
@@ -75,7 +81,9 @@ def createOutImagePixmap(drawable):
   
 def copyImageToGrayscale(image):
   imageCopy = pdb.gimp_image_duplicate(image)
-  pdb.gimp_image_convert_grayscale(imageCopy)
+  # Convert RGB or INDEXED to GRAY
+  if  imageCopy.base_type != GRAY:
+    pdb.gimp_image_convert_grayscale(imageCopy)
   return imageCopy
   
   

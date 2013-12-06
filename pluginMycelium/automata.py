@@ -59,8 +59,10 @@ class Automata(object):
     meal = self.changeHealth() 
     self.tryPoop(meal)
     
-    self.move()
+    # Change direction just before move, otherwise other automata may swoop in and eat what I am greedily changing direction toward
     self.changeDirection()
+    self.move()
+    
     self.tryDivide()
     self.tryMigrate()
     
@@ -112,7 +114,30 @@ class Automata(object):
     Random direction change from set [ diagonally left of current direction, diagonally right of current direction]
     (Not hard left, or reverse.)
     '''
+    ##self._nonGreedyChangeDirection()
+    self._greedyChangeDirection()
+
+  
+  
+  def _nonGreedyChangeDirection(self):
+    '''
+    Random direction change from set [ diagonally left of current direction, diagonally right of current direction]
+    (Not hard left, or reverse.)
+    '''
     self.direction.tweak()
+    
+    
+  def _greedyChangeDirection(self):
+    '''
+    Greedy: choose direction toward more food.
+    '''
+    left, right = self.direction.fork()
+    leftNeighbor = self.position + left.unitCoordFor()
+    rightNeighbor = self.position + right.unitCoordFor()
+    if self.field.food.foodAt(leftNeighbor) > self.field.food.foodAt(rightNeighbor) :
+      self.direction = left
+    else:
+      self.direction = right
   
   
   def tryDivide(self):

@@ -5,7 +5,7 @@ import random
 from automata import Automata
 from pixmap.coord import Coord
 
-from config import MAX_POPULATION_COUNT as MAX_POPULATION_COUNT
+import config
 
 
 
@@ -46,7 +46,7 @@ class Field(object):
   Population limit implies little about density: all automata could be crowded together.
   '''
   def isOverPopulated(self):
-    return len(self.automata) >= MAX_POPULATION_COUNT
+    return len(self.automata) >= config.maxPopulation
   
 
   def isTerminal(self):
@@ -65,8 +65,10 @@ class Field(object):
     '''
     Dispatch populate on setting.
     '''
-    ##self.populateCenter()
-    self.populateUniformly()
+    if config.startPattern == 0:
+      self.populateCenter()
+    else:
+      self.populateUniformly()
   
   
   def populateCenter(self):
@@ -80,9 +82,11 @@ class Field(object):
 
   def populateUniformly(self):
     '''
-    Spread a population of 100 uniformly randomly over the field.
+    Spread populus uniformly randomly over the field.
     '''
-    for i in range(0, 100):
+    # ??? if user does not touch population, is a float?  So cast it to int.
+    assert config.maxPopulation > 0
+    for i in range(0, int(config.maxPopulation)):
       x = random.randint(0, self.frame.width)
       y = random.randint(0, self.frame.height)
       coord = Coord(x, y)
