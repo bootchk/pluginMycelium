@@ -14,12 +14,13 @@ from field import Field
 import config
 
 
-def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent):
+def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent, greedy):
   
   config.startPattern = startPattern
   config.maxPopulation = maxPopulation
   config.squirminess = squirminess
   config.terminationPercent = terminationPercent
+  config.greedy = greedy
   
   
   # From image create a gray pixmap (one byte of gray value per pixel) to be food

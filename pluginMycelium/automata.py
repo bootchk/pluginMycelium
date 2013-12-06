@@ -8,6 +8,7 @@ from direction import Direction
 from pixmap.coord import Coord
 
 
+import config
 from config import HEALTH_TO_PROCREATE as HEALTH_TO_PROCREATE
 from config import HEALTH_DAILY_METABOLISM as HEALTH_DAILY_METABOLISM
 
@@ -47,6 +48,12 @@ class Automata(object):
       self.direction = Direction()
     else:
       self.direction = direction
+    
+    # Set behaviour by binding to one of two methods
+    if config.greedy:
+      self.changeDirectionMethod = self._greedyChangeDirection
+    else:
+      self.changeDirectionMethod = self._nonGreedyChangeDirection
     
     
   def live(self):
@@ -114,9 +121,8 @@ class Automata(object):
     Random direction change from set [ diagonally left of current direction, diagonally right of current direction]
     (Not hard left, or reverse.)
     '''
-    ##self._nonGreedyChangeDirection()
-    self._greedyChangeDirection()
-
+    # Call the method bound at init time
+    self.changeDirectionMethod()
   
   
   def _nonGreedyChangeDirection(self):
@@ -134,7 +140,8 @@ class Automata(object):
     left, right = self.direction.fork()
     leftNeighbor = self.position + left.unitCoordFor()
     rightNeighbor = self.position + right.unitCoordFor()
-    if self.field.food.foodAt(leftNeighbor) > self.field.food.foodAt(rightNeighbor) :
+    # TODO this biases toward right when neighbors equal
+    if self.field.food.at(leftNeighbor) > self.field.food.at(rightNeighbor) :
       self.direction = left
     else:
       self.direction = right

@@ -46,10 +46,10 @@ class Food(object):
     I can only eat so much, and no more than is available.
     '''
     # assert position is not clipped
-    if self.foodAt(position) > GUT_SIZE:
+    if self._foodAt(position) > GUT_SIZE:
       result = GUT_SIZE
     else:
-      result = self.foodAt(position)
+      result = self._foodAt(position)
     assert result >= 0 and result <= GUT_SIZE
     return result
       
@@ -58,16 +58,26 @@ class Food(object):
     if self.pixmap.isClipped(position):
       result = False  # No food off the field
     else:
-      result = self.foodAt(position) > 0
+      result = self._foodAt(position) > 0
     return result
   
   
+  def at(self, position):
+    ''' Food at position when position may need clipping. '''
+    if self.pixmap.isClipped(position):
+      result = 0
+    else:
+      result = self._foodAt(position)
+    return result
   
-  def foodAt(self, position):
+  
+  def _foodAt(self, position):
     ''' 
     Knows how to convert pixmap to food.
     Pixmap indexing returns an array.
     Grayscale has one pixelel 
+    
+    !!! Private, when we know not position.isClipped
     '''
     return self.pixmap[position][0]
   
@@ -78,7 +88,7 @@ class Food(object):
     Note Pixmap does not support operand -= 
     Pixmap value is an array
     '''
-    remainingFood = self.foodAt(position) - consumed
+    remainingFood = self._foodAt(position) - consumed
     self.pixmap[position] = array('B', (remainingFood, ))
     
     

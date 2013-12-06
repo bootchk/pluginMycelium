@@ -23,6 +23,7 @@ Which as ratio to 255 is 76, 38, 75
 26, 13, 24
 '''
 squirminess = 0
+greedy = False
 
 # how much health a automata may eat (gain) per period
 GUT_SIZE = 26  # 76
