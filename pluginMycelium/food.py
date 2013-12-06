@@ -18,6 +18,9 @@ class Food(object):
     
     # Count places that might have food
     self.places = pixmap.width * pixmap.height
+    
+    self._totalFood = self.totalFood()
+
 
 
   def eat(self, position):
@@ -77,9 +80,18 @@ class Food(object):
     self.pixmap[position] = array('B', (remainingFood, ))
     
     
+  def totalFood(self):
+    total = 0
+    for pixel in self.pixmap:
+      total += pixel[0]   # Grayscale
+    return total
+    
+    
   def isMostlyGone(self):
-    # TODO this is not guaranteed to terminate
-    return self.eats > ( self.places * 1 )
+    return self.eats > self._totalFood * 0.8
+  
+    ## TODO this is not guaranteed to terminate
+    ## return self.eats > ( self.places * 1 )
   
   
     

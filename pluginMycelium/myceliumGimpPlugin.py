@@ -8,7 +8,6 @@ from pixmap.pixmap import Pixmap
 
 from simulator import AutomataSimulator
 from frame import Frame
-from automata import Automata
 from food import Food
 from artifacts import Artifacts
 from field import Field
@@ -21,17 +20,14 @@ def myceliumGimpPlugin(image, drawable, foo):
   grayPixmap = createGrayPixmapFromInImage(image)
   food = Food(grayPixmap) # wrap pixmap, consider it food
   
-  # output image
+  # output images out
   outputPixmap = createOutImagePixmap(drawable)
   artifacts = Artifacts(outputPixmap) # wrap pixmap, consider it artifact
   
   frame=Frame( drawable.width, drawable.height )
-  field=Field(food=food, artifacts=artifacts)
   
-  # Populate one automata
-  # If the center has no food the simulation will stop immediately?
-  automata = Automata(position=frame.center(), field=field)
-  field.append(automata)
+  field=Field(food=food, artifacts=artifacts, frame=frame)
+  field.populate()
   
   simulator = AutomataSimulator(frame=frame, field=field)
   simulator.simulate()

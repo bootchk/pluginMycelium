@@ -4,6 +4,8 @@ import random
 
 from pixmap.coord import Coord
 
+
+
 class Direction(object):
   '''
   A direction a automata can move.
@@ -28,7 +30,8 @@ class Direction(object):
   
   def __init__(self, cardinal=None):
     if cardinal is None:
-      self.index=0
+      # initialize randomly
+      self.index=random.randint(0,7)
     else:
       assert cardinal >= 0 and cardinal <=7
       self.index = cardinal

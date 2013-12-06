@@ -1,5 +1,10 @@
 '''
 '''
+import random
+
+from automata import Automata
+from pixmap.coord import Coord
+
 from config import MAX_POPULATION_COUNT as MAX_POPULATION_COUNT
 
 
@@ -11,18 +16,19 @@ class Field(object):
   '''
   
   
-  def __init__(self, food, artifacts):
+  def __init__(self, food, artifacts, frame):
     self.automata = []
     
     # Public
     self.food = food
     self.artifacts = artifacts
+    self.frame = frame
   
   
   def append(self, automata):
     self.automata.append(automata)
     print("append Automata ", len(self.automata) )
-    
+    pass
     
   def automataGenerator(self):
     ''' 
@@ -55,4 +61,32 @@ class Field(object):
     return self.food.isMostlyGone()
   
   
+  def populate(self):
+    '''
+    Dispatch populate on setting.
+    '''
+    ##self.populateCenter()
+    self.populateUniformly()
+  
+  
+  def populateCenter(self):
+    '''
+    Populate one automata in center.
+    If the center has no food the simulation will stop immediately?
+    '''
+    automata = Automata(position=self.frame.center(), field=self)
+    self.append(automata)
+
+
+  def populateUniformly(self):
+    '''
+    Spread a population of 100 uniformly randomly over the field.
+    '''
+    for i in range(0, 100):
+      x = random.randint(0, self.frame.width)
+      y = random.randint(0, self.frame.height)
+      coord = Coord(x, y)
+      automata = Automata(position=coord, field=self)
+      self.append(automata)
+      
   
