@@ -15,13 +15,14 @@ import config
 
 
 def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent, greedy,
-                       mealCalories, burnCalories, reservesToDivide):
+                       exhaustion, mealCalories, burnCalories, reservesToDivide):
   
   config.startPattern = startPattern
   config.maxPopulation = maxPopulation
   config.squirminess = squirminess
   config.terminationPercent = terminationPercent
   config.greedy = greedy
+  config.exhaustion = exhaustion
   config.mealCalories = int(mealCalories)
   config.burnCalories = int(burnCalories)
   config.reservesToDivide = int(reservesToDivide)

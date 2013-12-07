@@ -29,6 +29,11 @@ class Field(object):
     self.automata.append(automata)
     print("append Automata ", len(self.automata) )
     
+  def kill(self, automata):
+    ''' Remove automata from field. '''
+    assert automata in self.automata
+    self.automata.remove(automata)
+    
     
   def automataGenerator(self):
     ''' 

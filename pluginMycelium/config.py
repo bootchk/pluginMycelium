@@ -24,7 +24,7 @@ Which as ratio to 255 is 76, 38, 75
 '''
 squirminess = 0
 greedy = False
-
+exhaustion = 0
 mealCalories = 0
 burnCalories = 0
 reservesToDivide = 0

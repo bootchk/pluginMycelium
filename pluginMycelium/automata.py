@@ -71,7 +71,7 @@ class Automata(object):
     self.move()
     
     self.tryDivide()
-    self.tryMigrate(meal)
+    self.tryExhaustion(meal)
     
     
     
@@ -85,7 +85,7 @@ class Automata(object):
     ##print("Starved", self.position)
     self._reserves = 0
   
-  
+
   def metabolize(self):
     '''
     Try to eat.  Return size of meal eaten.
@@ -123,6 +123,7 @@ class Automata(object):
     (Not hard left, or reverse.)
     '''
     # Call the method bound at init time
+    # TODO subclasses and factories
     self.changeDirectionMethod()
   
   
@@ -175,14 +176,22 @@ class Automata(object):
     self.field.append(newAutomata)
   
     
-  def tryMigrate(self, meal):
+  def tryExhaustion(self, meal):
     '''
-    Migrate if starved and did not eat.
+    Test whether exhausted: starved and did not eat.
     
     Alternative: migrate if starved regardless whether we ate.
     '''
     if self.isStarved() and meal <= 0:
-      self.migrate()
+      if config.exhaustion == 0:
+        '''
+        Perish: remove myself from population.
+        Self will be garbage collected.
+        Some other automate may repopulate (by dividing.)
+        '''
+        self.field.kill(self)
+      else:
+        self.migrate()
       
       
   def tryPoop(self, meal):
