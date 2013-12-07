@@ -9,8 +9,8 @@ from pixmap.coord import Coord
 
 
 import config
-from config import HEALTH_TO_PROCREATE as HEALTH_TO_PROCREATE
-from config import HEALTH_DAILY_METABOLISM as HEALTH_DAILY_METABOLISM
+#from config import HEALTH_TO_PROCREATE as HEALTH_TO_PROCREATE
+#from config import HEALTH_DAILY_METABOLISM as HEALTH_DAILY_METABOLISM
 
 
   
@@ -35,15 +35,15 @@ class Automata(object):
   '''
   
   
-  def __init__(self, position, field, direction=None, health=None):
+  def __init__(self, position, field, direction=None, reserves=None):
     assert position is not None
     assert field is not None
     self.position = copy(position) # !!! copy
     self.field = field  # a automata knows its field
-    if health is None:
-      self.healthState = 0
+    if reserves is None:
+      self._reserves = 0
     else:
-      self.healthState = health
+      self._reserves = reserves
     if direction is None:
       self.direction = Direction()
     else:
@@ -63,7 +63,7 @@ class Automata(object):
     !!! It is not invariant that current position is on the field.
     '''
     # eat and poop at current position, if it is on the field !!!
-    meal = self.changeHealth() 
+    meal = self.metabolize() 
     self.tryPoop(meal)
     
     # Change direction just before move, otherwise other automata may swoop in and eat what I am greedily changing direction toward
@@ -71,7 +71,7 @@ class Automata(object):
     self.move()
     
     self.tryDivide()
-    self.tryMigrate()
+    self.tryMigrate(meal)
     
     
     
@@ -79,21 +79,22 @@ class Automata(object):
     return self.field.food.isAvailableAt(self.position)
   
   def isStarved(self):
-    return self.healthState == 0
+    return self._reserves == 0
   
   def setStarved(self):
     ##print("Starved", self.position)
-    self.healthState = 0
+    self._reserves = 0
   
   
-  def changeHealth(self):
+  def metabolize(self):
     '''
-    Eating increases health, and just living decreases health.
-    Return size of meal eaten.
+    Try to eat.  Return size of meal eaten.
+    Adjust reserves.
     '''
     meal = self.field.food.eat(self.position)
-    self.healthState +=  meal - HEALTH_DAILY_METABOLISM
-    if self.healthState <= 0:
+    # A meal larger than metabolic rate increases reserves.
+    self._reserves +=  meal - config.burnCalories
+    if self._reserves <= 0:
       self.setStarved()
     return meal
     
@@ -148,8 +149,8 @@ class Automata(object):
   
   
   def tryDivide(self):
-    ''' If I am healthy enough, and the field is not overpopulated, divide. '''
-    if self.healthState > HEALTH_TO_PROCREATE and not self.field.isOverPopulated():
+    ''' If self has enough reserves, and the field is not overpopulated, divide. '''
+    if self._reserves > config.reservesToDivide and not self.field.isOverPopulated():
       self.divide()
       
       
@@ -158,15 +159,15 @@ class Automata(object):
     Spawn a new automata.
     '''
     
-    # Divide self's health evenly
-    self.healthState /= 2 # integer divide
+    # Divide self's reserves evenly
+    self._reserves /= 2 # integer divide
     
     # child and parent directions diverge, slightly left and right
     left, right = self.direction.fork()
     self.direction = left
     
     # Parent and child in same position.
-    newAutomata = Automata(position=self.position, field=self.field, health=self.healthState, direction=right)
+    newAutomata = Automata(position=self.position, field=self.field, reserves=self._reserves, direction=right)
     
     ## ALTERNATIVE  child move in opposite direction
     ## newAutomata.direction.setOpposite(self.direction)
@@ -174,8 +175,13 @@ class Automata(object):
     self.field.append(newAutomata)
   
     
-  def tryMigrate(self):
-    if self.isStarved():
+  def tryMigrate(self, meal):
+    '''
+    Migrate if starved and did not eat.
+    
+    Alternative: migrate if starved regardless whether we ate.
+    '''
+    if self.isStarved() and meal <= 0:
       self.migrate()
       
       
@@ -195,7 +201,8 @@ class Automata(object):
     '''
     Note we may have just eaten, but could still be starved, if we did not eat enough to equal our daily metabolism.
     '''
-    self._poopMealIfNotStarved(meal)
+    ##self._poopMealIfNotStarved(meal)
+    self._poopMealIfAte(meal)
     
     
   # Alternative 1
@@ -210,9 +217,11 @@ class Automata(object):
       # !!! Cannot assert: not isClipped(self.position)
       self.field.artifacts.depositAt(self.position, amount=meal)
       
+      
   # Alternative 2
-  # TODO
-  # def _poopNonemptyGut
+  def _poopMealIfAte(self, meal):
+    # Assert this will not alter artifacts if meal is zero
+    self.field.artifacts.depositAt(self.position, amount=meal)
   
   
     

@@ -8,15 +8,16 @@ For dev in Eclipse: in proj properties>PyDev PYTHONPATH>External libraries, add:
 from gimpfu import *
 
 
-def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent, squirminess, greedy):
+def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent, squirminess, greedy,
+               mealCalories, burnCalories, reservesToDivide ):
   ''' 
   Glue to code in a Python package in same directory as this. 
   (Keep plugin code separate from this wrapper code.
   '''
   from pluginMycelium.myceliumGimpPlugin import myceliumGimpPlugin
   
-  myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent, greedy)
-  
+  myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent, greedy,
+                     mealCalories, burnCalories, reservesToDivide)
   
 
 register(
@@ -33,7 +34,11 @@ register(
           (PF_SPINNER, "maxPopulation", "Max population:", 100, (1, 1000, 10)),
           (PF_SLIDER, "terminationPercent", "Ending (percent):", 60, (1, 100, 10)),
           (PF_RADIO, "squirminess", "Squirminess:", 0, (("Relaxed", 0), ("Curly", 1), ("Kinky", 2))),
-          (PF_TOGGLE, "greedy",   "Greedy:", 0)
+          (PF_TOGGLE, "greedy",   "Greedy:", 0),
+          (PF_SLIDER, "mealCalories", "Meal calories:", 26, (1, 255, 10)),
+          (PF_SLIDER, "burnCalories", "Daily burn:", 24, (1, 255, 10)),
+          (PF_SLIDER, "reservesToDivide", "Reserves to procreate:", 13, (1, 255, 10)),
+          
         ],
         [],
         pluginMain)

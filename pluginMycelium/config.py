@@ -25,6 +25,14 @@ Which as ratio to 255 is 76, 38, 75
 squirminess = 0
 greedy = False
 
+mealCalories = 0
+burnCalories = 0
+reservesToDivide = 0
+
+
+'''
+OLD
+
 # how much health a automata may eat (gain) per period
 GUT_SIZE = 26  # 76
 
@@ -33,4 +41,4 @@ HEALTH_TO_PROCREATE = 13  # 38
 
 # how much health is consumed by metabolism per day
 HEALTH_DAILY_METABOLISM = 24  # 75
-
+'''

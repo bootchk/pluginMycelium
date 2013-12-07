@@ -4,7 +4,7 @@
 from array import array
 
 import config
-from config import GUT_SIZE as GUT_SIZE
+# from config import GUT_SIZE as GUT_SIZE
 
 
 class Food(object):
@@ -46,11 +46,11 @@ class Food(object):
     I can only eat so much, and no more than is available.
     '''
     # assert position is not clipped
-    if self._foodAt(position) > GUT_SIZE:
-      result = GUT_SIZE
+    if self._foodAt(position) > config.mealCalories:
+      result = config.mealCalories
     else:
       result = self._foodAt(position)
-    assert result >= 0 and result <= GUT_SIZE
+    assert result >= 0 and result <= config.mealCalories
     return result
       
         

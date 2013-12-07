@@ -28,7 +28,7 @@ class Field(object):
   def append(self, automata):
     self.automata.append(automata)
     print("append Automata ", len(self.automata) )
-    pass
+    
     
   def automataGenerator(self):
     ''' 
