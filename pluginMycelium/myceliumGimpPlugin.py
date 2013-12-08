@@ -60,13 +60,14 @@ def createGrayPixmapFromInImage(image):
   grayscaleImage = copyImageToGrayscale(image)
   activeLayer = pdb.gimp_image_get_active_drawable(grayscaleImage)
   
+  # Remove alpha channel if it has one (we don't use it, clogs pixmap, user may restore it.)
+  pdb.gimp_layer_flatten(activeLayer)
+  
   # !!! Invert it: convert black as small value to large value (of food.)
   # I.E. automatas consume black, and poop black
   pdb.gimp_invert(activeLayer)
   
-  grayPixmap = Pixmap(activeLayer)
-  
-  return grayPixmap
+  return Pixmap(activeLayer)
 
 
 def createOutImagePixmap(drawable):
@@ -87,10 +88,14 @@ def createOutImagePixmap(drawable):
   
   
 def copyImageToGrayscale(image):
+  '''
+  Copy of image converted to GRAY (might still  have ALPHA.)
+  '''
   imageCopy = pdb.gimp_image_duplicate(image)
+  
   # Convert RGB or INDEXED to GRAY
   if  imageCopy.base_type != GRAY:
-    pdb.gimp_image_convert_grayscale(imageCopy)
+    pdb.gimp_image_convert_grayscale(imageCopy)  
   return imageCopy
   
   

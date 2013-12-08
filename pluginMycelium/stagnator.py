@@ -15,7 +15,10 @@ class Stagnator(object):
   
   
   def isStagnant(self, newValue):
-    ''' is delta value approaching limit of zero? '''
+    ''' 
+    is delta value approaching limit of zero?
+    Where delta value is difference of newValue from newValue on prior call.
+    '''
     if self.previousValue is None:
       # First time ever called
       result = False
