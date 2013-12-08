@@ -17,9 +17,11 @@ class Artifacts(object):
   def depositAt(self, position, amount):
     '''
     In this design, an automata may wander off the field.
-    So the poop here is from yesterday's meal (today's metabolism) even though we might not have eaten.
-    Note an automata can't stay healthy very long off the field.
+    Note an automata off the field can't stay non-exhausted very long since there is no food: reserves will deplete.
+    
+    Whether the amount is from this period (pixel) or a previous period depends on the caller, not a concern here.
     '''
+    # not assert amount > 0
     if not self.pixmap.isClipped(position):
       ##print("depositAt", position)
       ##self.maximizeArtifact(position)
@@ -29,14 +31,20 @@ class Artifacts(object):
       !!! A deposit off the field dissappears from view, but is not a RuntimeError
       raise RuntimeError, "Wandered off field, should not be metabolizing"
       '''
-      print("Deposit off the field.")
+      if amount > 0:
+        '''
+        For now, this should never happen (it might as well be an assertion) but for future use, allow this.
+        
+        With a non-toroidal field, we get many zero deposits off the field (wandered automata.)
+        '''
+        print("Non-zero deposit off the field?")
       pass
     
   
   # ALTERNATIVE 1
   def incrementArtifact(self, position, amount):
     '''
-    Artifacts analog, slowly build up as automatas metabolize.
+    Artifacts not binary, slowly build in value as automatas metabolize.
     '''
     # Subtract: Gimp is a brightness 'value' where larger is whiter, subtract amount towards black.
     currentArtifact = self.pixmap[position][0]
@@ -57,3 +65,5 @@ class Artifacts(object):
   def flush(self):
     ''' Delegate '''
     self.pixmap.flushAll()
+    
+    

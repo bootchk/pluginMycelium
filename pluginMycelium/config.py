@@ -16,29 +16,24 @@ Automata parameters
 
 30, 15, 25 dies quickly
 
-As ratio, .3, .15, .295 the original?
-Which as ratio to 255 is 76, 38, 75
+As ratio, .3, .295, .15, are the original values.
+Which as ratio times 255 is 76, 75, 38, 
 
-.1, .05, .095
-26, 13, 24
+As ratio .1, .05, .095 is finer grained.
+Which as ratio times 255 is 26, 24, 13
 '''
 squirminess = 0
 greedy = False
 exhaustion = 0
-mealCalories = 0
-burnCalories = 0
-reservesToDivide = 0
 
+mealCalories = 0  # how much an automata may eat per period
+burnCalories = 0  # how much an automata metabolizes (from meal and reserves) each period
+reservesToDivide = 0  # how much reserves are required to divide
 
 '''
-OLD
+OLD names for these parameters
 
-# how much health a automata may eat (gain) per period
 GUT_SIZE = 26  # 76
-
-# how much health required to divide
-HEALTH_TO_PROCREATE = 13  # 38
-
-# how much health is consumed by metabolism per day
 HEALTH_DAILY_METABOLISM = 24  # 75
+HEALTH_TO_PROCREATE = 13  # 38
 '''

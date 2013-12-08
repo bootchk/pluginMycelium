@@ -198,8 +198,8 @@ class Automata(object):
     ''' 
     Artifact of metabolism i.e. eating.
     
-    Self need not be starved.  But might not have just eaten (meal might be 0.)
-    Self may be healthy but wandered off field.
+    Self need not be exhausted (might have reserves).  But might not have just eaten (meal might be 0.)
+    Self may have reserves but wandered off field.
     
     Whether current position has food, is on the field, etc. depends on the order in which sub-behaviours are called.
     
