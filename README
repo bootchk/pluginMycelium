@@ -10,7 +10,7 @@ This is unreleased work in progress.
 
 
 About
-=====
+-----
 
 A Gimp plugin that renders an image as mycelium, or threads, or wire.
 
@@ -20,7 +20,7 @@ Ignores the selection and renders the entire input image.
 
 
 References
-==========
+----------
 
 Uses worm automata paradigm.
 
@@ -29,15 +29,15 @@ http://en.wikipedia.org/wiki/Paterson%27s_worms
 
 
 Derivation
-==========
+----------
 
 Derived from open source written by Pavol Rusnak (source on GitHub) which was in turn derived from work by Ryan Alexander.
 
 
 Structure
-=========
+------------------
 
-plugin_mycelium.py is the 'main' of the plugin, that GIMP finds in it's plugin directory. 
+plugin-mycelium.py is the 'main' of the plugin, that GIMP finds in it's plugin directory. 
 It is just a shell, most of the action is in the Python package pluginMycelium which it imports from the same directory.
 
 In the package, myceliumGimpPlugin.py is the 'main'.  Other files define classes that it uses.
@@ -45,23 +45,24 @@ In the package, myceliumGimpPlugin.py is the 'main'.  Other files define classes
 
 
 Installing
-==========
+----------
 
 Copy to the normal Gimp plugin directory for your platform:
 
-- the file plugin_mycelium.py	(a GIMP plugin written in Python)
+- the file plugin-mycelium.py	(a GIMP plugin written in Python)
 - the directory pluginMycelium	(a Python package)
 - the directory pixmap			(a Python package)
 
-Then grant execute permission (on Linux, >chmod +x plugin_mycelium.py)
+Then grant execute permission (on Linux, >chmod +x plugin-mycelium.py)
 
 You 'install' the packages in the same directory as Gimp Python plugins.
 (Not in the normal Python way; the packages do not yet include setup.py.)
 
 (For example, the normal Gimp plugin directory, for 3rd party plugins, on Linux, is ~/.gimp-2.8/plug-ins)
 
+
 Dependencies
-============
+------------
 
 This is a Gimp plugin, so it only works installed as a plugin for Gimp.
 

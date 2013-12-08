@@ -3,6 +3,7 @@
 import random
 
 from automata import Automata
+from stagnator import Stagnator
 from pixmap.coord import Coord
 
 import config
@@ -23,6 +24,8 @@ class Field(object):
     self.food = food
     self.artifacts = artifacts
     self.frame = frame
+  
+    self.stagnator = Stagnator()
   
   
   def append(self, automata):
@@ -62,8 +65,12 @@ class Field(object):
     
     Many other formulations are possible.
     The formulation: 'is every automata starved' didn't work well, ended simulation with much food remaining.
+    
+    !!! User has enough control to create conditions where simulation stagnates (in terms of food being eaten.)
+    Terminate simulation in that case. 
     '''
-    return self.food.isMostlyGone()
+    return self.food.isMostlyGone() or self.stagnator.isStagnant(newValue=self.food.eatenAmount())
+  
   
   
   def populate(self):

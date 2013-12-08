@@ -18,7 +18,7 @@ class AutomataSimulator(object):
   def simulate(self):
     '''
     Simulation loop.
-    Simulate time periods until termination condition.
+    Do simulate time periods until termination condition.
     '''
     # Python idiom for do until
     while True:

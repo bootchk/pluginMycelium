@@ -15,7 +15,7 @@ class Food(object):
   
   def __init__(self, pixmap):
     self.pixmap = pixmap
-    self.eatenAmount = 0
+    self._eatenAmount = 0
     
     # Count places that might have food
     self.places = pixmap.width * pixmap.height
@@ -35,7 +35,7 @@ class Food(object):
       result = self.whatICanEatAt(position)
       if result > 0:
         self.updateFoodAt(position, result)
-        self.eatenAmount += result
+        self._eatenAmount += result
         ##print("Ate", result, " at ", position)
     return result
 
@@ -100,11 +100,14 @@ class Food(object):
     
     
   def isMostlyGone(self):
-    print("Eats", self.eatenAmount, "terminal", self._terminalEatenAmount)
-    return self.eatenAmount > self._terminalEatenAmount
+    print("Eats", self._eatenAmount, "terminal", self._terminalEatenAmount)
+    return self._eatenAmount > self._terminalEatenAmount
   
     ## TODO this is not guaranteed to terminate
     ## return self.eatenAmount > ( self.places * 1 )
   
+  def eatenAmount(self):
+    ''' How much food has been eaten by all automata, so far. '''
+    return self._eatenAmount
   
     
