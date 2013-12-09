@@ -2,7 +2,6 @@
 '''
 import random
 
-from automata import Automata
 from stagnator import Stagnator
 from pixmap.coord import Coord
 
@@ -17,7 +16,7 @@ class Field(object):
   '''
   
   
-  def __init__(self, food, artifacts, frame):
+  def __init__(self, automataFactory, food, artifacts, frame):
     self.automata = []
     
     # Public
@@ -25,6 +24,8 @@ class Field(object):
     self.artifacts = artifacts
     self.frame = frame
   
+    # Private
+    self.automataFactory = automataFactory
     self.stagnator = Stagnator()
   
   
@@ -88,7 +89,7 @@ class Field(object):
     Populate one automata in center.
     If the center has no food the simulation will stop immediately?
     '''
-    automata = Automata(position=self.frame.center(), field=self)
+    automata = self.automataFactory.produce(position=self.frame.center(), field=self)
     self.append(automata)
 
 
@@ -102,7 +103,7 @@ class Field(object):
       x = random.randint(0, self.frame.width)
       y = random.randint(0, self.frame.height)
       coord = Coord(x, y)
-      automata = Automata(position=coord, field=self)
+      automata = self.automataFactory.produce(position=coord, field=self)
       self.append(automata)
       
   

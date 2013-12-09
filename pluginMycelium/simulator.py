@@ -31,6 +31,7 @@ class AutomataSimulator(object):
       
       # TODO if animated
       self.flush()
+      # TODO progress bar
       print(">>>>>>>>>>>>>>>>Generation ", self.generationCount)
         
         

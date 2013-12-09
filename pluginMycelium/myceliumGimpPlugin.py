@@ -7,6 +7,8 @@ from gimpfu import *
 from pixmap.pixmap import Pixmap
 
 from simulator import AutomataSimulator
+from automataFactory import AutomataFactory
+from automata import Automata
 from frame import Frame
 from food import Food
 from artifacts import Artifacts
@@ -39,7 +41,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   
   frame=Frame( drawable.width, drawable.height )
   
-  field=Field(food=food, artifacts=artifacts, frame=frame)
+  field=Field(automataFactory=AutomataFactory(Automata), food=food, artifacts=artifacts, frame=frame)
   field.populate()
   
   simulator = AutomataSimulator(frame=frame, field=field)

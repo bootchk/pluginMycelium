@@ -46,7 +46,7 @@ class Automata(object):
     self.position = copy(position) # !!! copy
     self.pixelelIndex = 0 # GRAY, TODO generalize
     
-    self.field = field  # a automata knows its field
+    self.field = field  # an automata knows its field
     if reserves is None:
       self._reserves = 0
     else:
@@ -187,8 +187,11 @@ class Automata(object):
     left, right = self.direction.fork()
     self.direction = left
     
-    # Parent and child in same position.
-    newAutomata = Automata(position=self.position, field=self.field, reserves=self._reserves, direction=right)
+    '''
+    Create child, in same position.
+    Note we don't hardcode a class of automata, but ask field to create clone of correct subclass
+    '''
+    newAutomata = self.field.automataFactory.produce(position=self.position, field=self.field, reserves=self._reserves, direction=right)
     
     ## ALTERNATIVE  child move in opposite direction
     ## newAutomata.direction.setOpposite(self.direction)
