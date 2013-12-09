@@ -26,6 +26,7 @@ class Artifacts(object):
       ##print("depositAt", pixelelID)
       ##self.maximizeArtifact(pixelelID)
       self.incrementArtifact(pixelelID, amount)
+      ##self.replaceArtifact(pixelelID, amount)
     else:
       '''
       !!! A deposit off the field dissappears from view, but is not a RuntimeError
@@ -66,6 +67,17 @@ class Artifacts(object):
     
     ## ORIGINAL FOR HARDCODED CHANNEL
     ## self.pixmap[pixelelID] = array('B', (0, ))
+  
+  
+  # ALTERNATIVE 3
+  def replaceArtifact(self, pixelelID, amount):
+    # monotonic, not remainder
+    newValue = 255-amount
+    if newValue < self.pixmap.getPixelel(pixelelID):
+      # Clear other pixelels
+      self.pixmap[pixelelID.coord]=array('B', (0,0,0))
+    
+      self.pixmap.setPixelel(pixelelID, newValue)
     
     
   def flush(self):

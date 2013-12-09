@@ -86,11 +86,15 @@ class Field(object):
   
   def populateCenter(self):
     '''
-    Populate one automata in center.
+    Populate one set of automata in center.
     If the center has no food the simulation will stop immediately?
+    Depending on other parameters, automata may divide and spread quickly,
+    leaving little evidence that we started in center.
     '''
-    automata = self.automataFactory.produce(position=self.frame.center(), field=self)
-    self.append(automata)
+    # Create one automata for each channel (factory switches to next channel on each call.)
+    for _ in range(0, self.food.pixmap.bpp):
+      automata = self.automataFactory.produce(position=self.frame.center(), field=self)
+      self.append(automata)
 
 
   def populateUniformly(self):
@@ -99,7 +103,7 @@ class Field(object):
     '''
     # ??? if user does not touch population, is a float?  So cast it to int.
     assert config.maxPopulation > 0
-    for i in range(0, int(config.maxPopulation)):
+    for _ in range(0, int(config.maxPopulation)):
       x = random.randint(0, self.frame.width)
       y = random.randint(0, self.frame.height)
       coord = Coord(x, y)

@@ -18,7 +18,7 @@ class AutomataFactory(object):
   
   def __init__(self, automataClass, bpp=1):
     self.automataClass = automataClass  # tooling
-    self.bpp = bpp  # bytes per pixel, i.e. mode, i.e. channels i.e. separate resources
+    self.bpp = bpp  # count of bytes per pixel (aka channels, aka resourceTypes) i.e. image mode
     
     self. lastChannel = 0
 
