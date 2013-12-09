@@ -5,8 +5,9 @@ import random
 
 from copy import copy
 from direction import Direction
-from pixmap.coord import Coord
 
+from pixmap.coord import Coord
+from pixmap.pixelelID import PixelelID
 
 import config
 #from config import HEALTH_TO_PROCREATE as HEALTH_TO_PROCREATE
@@ -32,13 +33,19 @@ class Automata(object):
   - worms can move off the field (wander), and then MIGHT wander back on to the field.
   - worms if starved can migrate (jump more than one step, in more than 8 directions), again even off the field
   - worms if starved don't die, they continue to move and migrate (they just don't poop.)
+  
+  Operates on an image, where image has 3 dimensions: 2D coord and 1D pixelel (channel)
   '''
   
   
   def __init__(self, position, field, direction=None, reserves=None):
     assert position is not None
     assert field is not None
+    
+    # Focused on a position AND a pixelel at that position
     self.position = copy(position) # !!! copy
+    self.pixelelIndex = 0 # GRAY, TODO generalize
+    
     self.field = field  # a automata knows its field
     if reserves is None:
       self._reserves = 0
@@ -54,6 +61,13 @@ class Automata(object):
       self.changeDirectionMethod = self._greedyChangeDirection
     else:
       self.changeDirectionMethod = self._nonGreedyChangeDirection
+    
+    
+  '''
+  Most of this class is about position i.e. Coord only, but some methods need a pixelelID.
+  '''
+  def pixelelID(self):
+    return PixelelID(self.position, self.pixelelIndex)
     
     
   def live(self):
@@ -76,7 +90,8 @@ class Automata(object):
     
     
   def isEating(self):
-    return self.field.food.isAvailableAt(self.position)
+    return self.field.food.isAvailableAt(self.pixelelID())
+  
   
   def isStarved(self):
     return self._reserves == 0
@@ -91,7 +106,7 @@ class Automata(object):
     Try to eat.  Return size of meal eaten.
     Adjust reserves.
     '''
-    meal = self.field.food.eat(self.position)
+    meal = self.field.food.eat(self.pixelelID())
     # A meal larger than metabolic rate increases reserves.
     self._reserves +=  meal - config.burnCalories
     if self._reserves <= 0:
@@ -143,7 +158,12 @@ class Automata(object):
     leftNeighbor = self.position + left.unitCoordFor()
     rightNeighbor = self.position + right.unitCoordFor()
     # TODO this biases toward right when neighbors equal
-    if self.field.food.at(leftNeighbor) > self.field.food.at(rightNeighbor) :
+    
+    # Identify self's pixelel at self's position
+    leftPixelel = PixelelID(leftNeighbor, self.pixelelIndex)
+    rightPixelel = PixelelID(rightNeighbor, self.pixelelIndex)
+    
+    if self.field.food.at(leftPixelel) > self.field.food.at(rightPixelel) :
       self.direction = left
     else:
       self.direction = right
@@ -224,13 +244,13 @@ class Automata(object):
     '''
     if not self.isStarved():
       # !!! Cannot assert: not isClipped(self.position)
-      self.field.artifacts.depositAt(self.position, amount=meal)
+      self.field.artifacts.depositAt(self.pixelelID(), amount=meal)
       
       
   # Alternative 2
   def _poopMealIfAte(self, meal):
     # Assert this will not alter artifacts if meal is zero
-    self.field.artifacts.depositAt(self.position, amount=meal)
+    self.field.artifacts.depositAt(self.pixelelID(), amount=meal)
   
   
     

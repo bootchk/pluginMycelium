@@ -4,7 +4,7 @@
 from array import array
 
 import config
-# from config import GUT_SIZE as GUT_SIZE
+
 
 
 class Food(object):
@@ -25,77 +25,85 @@ class Food(object):
 
 
 
-  def eat(self, position):
+  def eat(self, pixelelID):
     '''
     Try to eat.  Return what I did eat.
     '''
-    if self.pixmap.isClipped(position):
+    if self.pixmap.isClipped(pixelelID.coord):
       result = 0
     else:
-      result = self.whatICanEatAt(position)
+      result = self.whatICanEatAt(pixelelID)
       if result > 0:
-        self.updateFoodAt(position, result)
+        self.updateFoodAt(pixelelID, result)
         self._eatenAmount += result
-        ##print("Ate", result, " at ", position)
+        ##print("Ate", result, " at ", pixelelID)
     return result
 
 
-  def whatICanEatAt(self, position):
+  def whatICanEatAt(self, pixelelID):
     '''
     Food consumed, in range [0,GUT_SIZE]
     I can only eat so much, and no more than is available.
     '''
-    # assert position is not clipped
-    if self._foodAt(position) > config.mealCalories:
+    # assert pixelelID is not clipped
+    if self._foodAt(pixelelID) > config.mealCalories:
       result = config.mealCalories
     else:
-      result = self._foodAt(position)
+      result = self._foodAt(pixelelID)
     assert result >= 0 and result <= config.mealCalories
     return result
       
         
-  def isAvailableAt(self, position):
-    if self.pixmap.isClipped(position):
+  def isAvailableAt(self, pixelelID):
+    if self.pixmap.isClipped(pixelelID.coord):
       result = False  # No food off the field
     else:
-      result = self._foodAt(position) > 0
+      result = self._foodAt(pixelelID) > 0
     return result
   
   
-  def at(self, position):
-    ''' Food at position when position may need clipping. '''
-    if self.pixmap.isClipped(position):
+  def at(self, pixelelID):
+    ''' Food at pixelelID when pixelelID may need clipping. '''
+    if self.pixmap.isClipped(pixelelID.coord):
       result = 0
     else:
-      result = self._foodAt(position)
+      result = self._foodAt(pixelelID)
     return result
   
   
-  def _foodAt(self, position):
+  def _foodAt(self, pixelelID):
     ''' 
     Knows how to convert pixmap to food.
     Pixmap indexing returns an array.
     Grayscale has one pixelel 
     
-    !!! Private, when we know not position.isClipped
+    !!! Private, when we know not pixelelID.isClipped
     '''
-    return self.pixmap[position][0]
+    return self.pixmap.getPixelel(pixelelID)
   
   
-  def updateFoodAt(self, position, consumed):
+  def updateFoodAt(self, pixelelID, consumed):
     '''
     Consume food.  
     Note Pixmap does not support operand -= 
     Pixmap value is an array
     '''
-    remainingFood = self._foodAt(position) - consumed
-    self.pixmap[position] = array('B', (remainingFood, ))
+    remainingFood = self._foodAt(pixelelID) - consumed
+    
+    ## Original code to assign whole pixel of one pixelel
+    ## self.pixmap[pixelelID.coord] =  array('B', (remainingFood, ))
+    
+    self.pixmap.setPixelel(pixelelID, remainingFood)
+
     
     
   def totalFood(self):
     total = 0
+    # Sum over pixels
     for pixel in self.pixmap:
-      total += pixel[0]   # Grayscale
+      # Sum over pixelels of pixel
+      for i in range(0, self.pixmap.bpp):
+        total += pixel[i]
     return total
     
     
