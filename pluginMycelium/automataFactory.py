@@ -16,8 +16,11 @@ class AutomataFactory(object):
   '''
   
   
-  def __init__(self, automataClass):
+  def __init__(self, automataClass, bpp=1):
     self.automataClass = automataClass  # tooling
+    self.bpp = bpp  # bytes per pixel, i.e. mode, i.e. channels i.e. separate resources
+    
+    self. lastChannel = 0
 
 
   def produce(self, **kwargs):
@@ -36,11 +39,13 @@ class AutomataFactory(object):
   
   def chooseChannel(self):
     '''
-    Choose a channel (food, aka resource)
-     It defaults to 0, but here we choose it according to user's choice of output image.
-     
-    If output is color, choose one of the RGB channels.
-    Else choose the GRAY channel
+    Choose a channel (food, aka resource).
+    
+    Cycle through the channels.
+    If bpp is 1, this always return 0 (the GRAY channel.)
     '''
-    return 0
+    self.lastChannel += 1
+    if self.lastChannel > self.bpp - 1:
+      self.lastChannel = 0
+    return self.lastChannel
      

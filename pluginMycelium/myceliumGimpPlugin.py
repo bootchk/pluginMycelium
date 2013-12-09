@@ -42,7 +42,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   
   frame=Frame( drawable.width, drawable.height )
   
-  field=Field(automataFactory=AutomataFactory(Automata), food=food, artifacts=artifacts, frame=frame)
+  field=Field(automataFactory=AutomataFactory(Automata, bpp=outputPixmap.bpp), food=food, artifacts=artifacts, frame=frame)
   field.populate()
   
   simulator = AutomataSimulator(frame=frame, field=field)
