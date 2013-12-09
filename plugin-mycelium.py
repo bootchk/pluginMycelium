@@ -9,7 +9,7 @@ from gimpfu import *
 
 
 def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent, squirminess, greedy,
-               exhaustion, mealCalories, burnCalories, reservesToDivide ):
+               exhaustion, mealCalories, burnCalories, reservesToDivide, renderToGray ):
   ''' 
   Glue to code in a Python package in same directory as this. 
   (Keep plugin code separate from this wrapper code.
@@ -17,7 +17,7 @@ def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent,
   from pluginMycelium.myceliumGimpPlugin import myceliumGimpPlugin
   
   myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent, greedy,
-                     exhaustion, mealCalories, burnCalories, reservesToDivide)
+                     exhaustion, mealCalories, burnCalories, reservesToDivide, renderToGray)
   
 
 register(
@@ -39,6 +39,7 @@ register(
           (PF_SLIDER, "mealCalories", "Meal calories:", 26, (1, 255, 10)),
           (PF_SLIDER, "burnCalories", "Daily burn:", 24, (1, 255, 10)),
           (PF_SLIDER, "reservesToDivide", "Reserves to procreate:", 13, (1, 255, 10)),
+          (PF_TOGGLE, "renderToGray",   "Render mode gray:", 1),
           
         ],
         [],

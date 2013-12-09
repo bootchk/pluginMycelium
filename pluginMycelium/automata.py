@@ -38,13 +38,13 @@ class Automata(object):
   '''
   
   
-  def __init__(self, position, field, direction=None, reserves=None):
+  def __init__(self, position, field, direction=None, reserves=None, channel=0):
     assert position is not None
     assert field is not None
     
     # Focused on a position AND a pixelel at that position
     self.position = copy(position) # !!! copy
-    self.pixelelIndex = 0 # GRAY, TODO generalize
+    self.pixelelIndex = channel # defaults to first channel (R or GRAY)
     
     self.field = field  # an automata knows its field
     if reserves is None:
@@ -188,10 +188,11 @@ class Automata(object):
     self.direction = left
     
     '''
-    Create child, in same position.
+    Create child, on same pixelel (position and channel.)
     Note we don't hardcode a class of automata, but ask field to create clone of correct subclass
     '''
-    newAutomata = self.field.automataFactory.produce(position=self.position, field=self.field, reserves=self._reserves, direction=right)
+    newAutomata = self.field.automataFactory.produce(position=self.position, channel=self.pixelelIndex,
+                                                     field=self.field, reserves=self._reserves, direction=right)
     
     ## ALTERNATIVE  child move in opposite direction
     ## newAutomata.direction.setOpposite(self.direction)

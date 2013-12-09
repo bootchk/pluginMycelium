@@ -2,6 +2,11 @@
 Parameters (aka configuration)
 '''
 
+'''
+Mode parameters
+'''
+renderToGray = True
+
 
 '''
 Field parameters.

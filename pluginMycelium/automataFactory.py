@@ -24,4 +24,23 @@ class AutomataFactory(object):
     '''
     Instance of some Automata subclass.
     '''
-    return self.automataClass(**kwargs)
+    if not 'channel' in kwargs:
+      print("No channel to produce")
+      '''
+      '''
+      return self.automataClass(channel=self.chooseChannel(), **kwargs )
+    else:
+      print("Channel to produce")
+      return self.automataClass(**kwargs)
+  
+  
+  def chooseChannel(self):
+    '''
+    Choose a channel (food, aka resource)
+     It defaults to 0, but here we choose it according to user's choice of output image.
+     
+    If output is color, choose one of the RGB channels.
+    Else choose the GRAY channel
+    '''
+    return 0
+     
