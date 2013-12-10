@@ -64,8 +64,10 @@ class Direction(object):
       result = [-1, 0, 1]
     elif config.squirminess == 1:
       result = [1, -1] # Curly, always turn, but slightly
-    else:
+    elif config.squirminess == 2:
       result = [-2, 0, 2] # Kinky, hard turn or straight
+    else:
+      result = [-1, 0, 1, 4]  # Plodding: relaxed or reverse
     # [-2, -1, 0, 1, 2]
     return result
     

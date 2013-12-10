@@ -108,7 +108,7 @@ class Food(object):
     
     
   def isMostlyGone(self):
-    print("Eats", self._eatenAmount, "terminal", self._terminalEatenAmount)
+    #print("Eats", self._eatenAmount, "terminal", self._terminalEatenAmount)
     return self._eatenAmount > self._terminalEatenAmount
   
     ## TODO this is not guaranteed to terminate

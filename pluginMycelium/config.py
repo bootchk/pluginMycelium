@@ -6,6 +6,7 @@ Parameters (aka configuration)
 Mode parameters
 '''
 renderToGray = True
+compose = 0
 
 
 '''

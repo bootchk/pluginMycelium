@@ -10,7 +10,8 @@ from gimpfu import *
 
 def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent, renderToGray, 
                squirminess, greedy, exhaustion, 
-               mealCalories, burnCalories, reservesToDivide ):
+               mealCalories, burnCalories, reservesToDivide,
+               compose ):
   ''' 
   Glue to code in a Python package in same directory as this. 
   (Keep plugin code separate from this wrapper code.
@@ -18,7 +19,8 @@ def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent,
   from pluginMycelium.myceliumGimpPlugin import myceliumGimpPlugin
   
   myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent, greedy,
-                     exhaustion, mealCalories, burnCalories, reservesToDivide, renderToGray)
+                     exhaustion, mealCalories, burnCalories, reservesToDivide, renderToGray,
+                     compose)
   
 
 register(
@@ -35,12 +37,13 @@ register(
           (PF_SPINNER, "maxPopulation", "Max population:", 100, (1, 10000, 10)),
           (PF_SLIDER, "terminationPercent", "Ending percent:", 60, (1, 100, 10)),
           (PF_TOGGLE, "renderToGray",   "Mode to gray:", 1),
-          (PF_OPTION, "squirminess","Myce squirm:", 0, ["Relaxed","Curly","Kinky"]),
+          (PF_OPTION, "squirminess","Myce squirm:", 0, ["Relaxed","Curly","Kinky","Plodding"]),
           (PF_TOGGLE, "greedy",   "Myce greedy:", 0),
           (PF_OPTION, "exhaustion","Myce exhausted:", 1, ["Die","Migrate"]),
           (PF_SLIDER, "mealCalories", "Myce max daily intake:", 26, (1, 255, 10)),
           (PF_SLIDER, "burnCalories", "Myce daily burn:", 24, (1, 255, 10)),
           (PF_SLIDER, "reservesToDivide", "Myce divide on reserves of:", 13, (1, 255, 10)),
+          (PF_OPTION, "compose", "Compose:", 0, ["Additive", "Ownership", "Maximize"]),
         ],
         [],
         pluginMain)
