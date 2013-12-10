@@ -6,15 +6,29 @@ Copyright 2013 Lloyd Konneker
 Licensed under GPLv3
 
 
-This is unreleased work in progress.
+This is work in progress.  It works but has a few bugs.  Development is on-going.
 
 
 About
 -----
 
-A Gimp plugin that renders an image as mycelium, or threads, or wire.
+A Gimp plugin (filter) that renders an image as mycelium, or threads, or wire.
 
-Generates a new, grayscale image from any color or grayscale image.
+
+Audience
+--------
+
+Artists who use Gimp.
+
+Programmers: as an example of object-oriented programming for simulation (the ancestral use of OOP as in Simula.)
+
+Theorists: as a  visible example of worm automata.
+
+
+Specifications as a plugin
+--------------------------
+
+Generates a new image from any color or grayscale or indexed image.  
 
 Ignores the selection and renders the entire input image.
 
@@ -24,8 +38,7 @@ References
 
 Uses worm automata paradigm.
 
-See also:
-http://en.wikipedia.org/wiki/Paterson%27s_worms
+See also:  http://en.wikipedia.org/wiki/Paterson%27s_worms
 
 
 Derivation
@@ -37,8 +50,7 @@ Derived from open source written by Pavol Rusnak (source on GitHub) which was in
 Structure
 ------------------
 
-plugin-mycelium.py is the 'main' of the plugin, that GIMP finds in it's plugin directory. 
-It is just a shell, most of the action is in the Python package pluginMycelium which it imports from the same directory.
+plugin-mycelium.py is the 'main' of the plugin, that GIMP finds in it's plugin directory.   It is just a shell, most of the action is in the Python package pluginMycelium which it imports from the same directory.
 
 In the package, myceliumGimpPlugin.py is the 'main'.  Other files define classes that it uses.
 
@@ -70,4 +82,66 @@ This plugin is not a single file (like many other plugins) but requires two othe
 - pluginMycelium (the engine for this plugin)
 - pixmap (another Python package, which I also wrote, and its on Github too.)
 
+
+
+Explanation
+-----------
+
+Myce are like mycelium or mice.  They consume from the input image and appear in the output image.  Considered as mycelium, they grow linearly, like threads.  Considered as mice, they move, leaving a trail of deposits.
+
+The tradition of 'worm automata' is misleading: all the action (feeding and depositing) is at a point, the head of the worm.  The result might look like a worm, but the automata are not shaped like a worm.  And the result might not be wormy or thready.
+
+Different myce instances may occupy the same pixel.
+
+Myce don't directly interact with each other (except indirectly via their effect on the environment.)
+
+Myce might wander off the field.
+
+Myce are specialized to a channel (a pixelel of a pixel.)  I.E. to a kind of resource.
+
+Myce have a reserve of eaten food minus requirement.
+
+Myce can divide if their reserves are large enough.
+
+Myce with no reserves and not eating might migrate.  Migrate means randomly jump to another pixel at a middle distance.
+
+Myce only deposit if they eat.  Thus their trail might have gaps.
+
+
+
+Parameters
+----------
+
+Starting field: how the simulation is initialized.  Uniform: a population (the max) is uniformly random distributed.  Center: a small population starts in the center.
+
+Max population: upper limit on the population of automata.
+
+Ending percent: one factor determining when the simulation ends.  The percent of food consumed.  The simulation also ends if many simulation periods elapse with no food consumed, e.g. if all the myce have died.
+
+Mode to gray: whether the output is grayscale.  Input may be color, grayscale, or indexed.  Output may be either color or grayscale.  If 'Mode to gray' is 'No', each myce is specialized to a channel (R, G, or B.)  If 'Mode to gray' is 'Yes',  all myce are in one channel.
+
+Myce squirm: the direction a myce moves.  Relaxed: mostly forward. ....  Plodding: mostly forward but also straight back.
+
+Myce greedy: whether a myce moves to a pixel with more food or randomly chooses from pixels in it's squirm range.
+
+Myce exhausted: what happens when a myce has no reserves and finds no food.
+
+Myce max daily intake: how much food a myce attempts to eat.
+
+Myce daily burn: how much food or reserves are consumed each period.
+
+Myce divide on reserves of: how much reserves cause a myce to divide (splitting its reserves with it's twin.)
+
+Compose: how what a myce deposits is composed with what has been deposited earlier (by itself, or by other myce.)
+
+
+
+TODO
+----
+
+Swathing: myce consume from a neighborhood (blur.)
+
+Crossing: myce won't cross each other's trails.
+
+Slime: myce leave a trail even if not eating.
 
