@@ -3,6 +3,8 @@
 
 import config
 
+from pixmap.pixelelID import PixelelID
+
 ''' Using Eiffel terminology: deffered and effective. '''
 
 
@@ -35,37 +37,39 @@ class Mouth(object):
   Responsibility:
   - know the extent of mouth (how much food it reaches.)  Not the same as size.
   '''
-  def at(self, position):
-    raise NotImplementedError, "Deferred"
-  
-  def updateFoodAt(self, pixelelID, foodAt, consumed):
-    raise NotImplementedError, "Deferred"
-  
-  
-
-class SinglePixelMouth(Mouth):
-  '''
-  Behaviour of automata interacting with food.
-  
-  This is a mouth whose range is just one pixel.
-  '''
-  
-  def at(self, position):
+  def at(self, automata):
     '''
-    Food at mouth when mouth is at position.
+    Food at mouth of automata (at current place.)
     Might be greater than mouth can clamp.
-    
-    Effect deferred method.
     '''
-    return self.food.at(position)
-
+    raise NotImplementedError, "Deferred"
   
   
-  def updateFoodAt(self, pixelelID, foodAt, consumed):
+  def updateFoodAt(self, automata, foodAt, consumed):
     '''
     Consume food.
     Mouth knows the range of pixels it is consuming from.
     
+    foodAt is a cached value of the food at the automata.
+    '''
+    raise NotImplementedError, "Deferred"
+  
+  
+
+
+class SinglePixelMouth(Mouth):
+  '''
+  Mouth whose range is just one pixel.
+  '''
+  
+  def at(self, automata):
+    ''' Effect deferred method. '''
+    return self.food.at(automata.pixelelID())
+
+  
+  
+  def updateFoodAt(self, automata, foodAt, consumed):
+    '''
     Effect deferred method.
     
     Note Pixmap does not support operand -= 
@@ -76,6 +80,85 @@ class SinglePixelMouth(Mouth):
     ## Original code to assign whole pixel of one pixelel
     ## self.pixmap[pixelelID.coord] =  array('B', (remainingFood, ))
     
-    self.food.pixmap.setPixelel(pixelelID, remainingFood)
+    self.food.pixmap.setPixelel(automata.pixelelID(), remainingFood)
     
+
+
+class BigMouth(Mouth):
+  '''
+  Mouth whose range is pixels to the side (a patch, here from a swath).
+  
+  In other words, mouth covers a patch.
+  Here we iterate over a patch.
+  '''
+  
+  def _makePatch(self, automata):
+    '''
+    Container of PixelelID in a patch around automata.
     
+    !!! cache for future call to updateFoodAt.
+    ''' 
+    patch = []
+    swathCoords = automata.direction.swathCoords()
+    for coord in swathCoords:
+      wildPosition = automata.position + coord  # !!! wild, is unclipped
+      if self.food.pixmap.isClipped(wildPosition):
+        continue
+      patch.append(PixelelID(wildPosition, automata.pixelelIndex))
+    # patch might be empty
+    return patch
+      
+    
+  def at(self, automata):
+    '''
+    Effect deferred method.
+    '''
+    self.patch = self._makePatch(automata)
+    
+    result = 0
+    for pixelelID in self.patch:
+      result += self.food.at(pixelelID)
+    '''
+    result may be greater than 255 i.e. max pixelel value defined by graphics framework.
+    assert that the caller will clamp it to 255 ???
+    '''
+    return result
+
+  
+  
+  def updateFoodAt(self, automata, foodAt, consumed):  # foodAt is not used.
+    '''
+    Effect deferred method.
+    
+    Here we eat the maximum at each pixel until we reach food consumed.
+    So we may not eat from every pixel.
+    The order of the patch makes a difference: for now, the center pixel is first.
+    '''
+    '''
+    Since we are also depositing it, and can't deposit more than 255 in one pixelel.
+    This might change, if we deposit at more than one pixelel.
+    '''
+    assert consumed <= 255 
+    
+    yetToConsume = consumed
+    
+    for pixelelID in self.patch:
+      foodAt = self.food.pixmap.getPixelel(pixelelID)
+      if foodAt <= 0:
+        continue
+      # assert 0 < foodAt <= 255
+      # Don't eat more from this pixel than ToConsume
+      clamped = min(foodAt, yetToConsume)
+      remainingFood = foodAt - clamped
+      self.food.pixmap.setPixelel(pixelelID, remainingFood)
+      yetToConsume -= clamped
+      if yetToConsume <= 0:
+        break
+      
+  """
+  def clampValue(self, amount, clampValue):
+    # Standard Python idiom for clamping in range [0, clampValue]
+    return max(0, min(amount, clampValue))
+  """
+  
+  

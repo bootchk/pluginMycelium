@@ -1,7 +1,7 @@
 '''
 '''
 
-from mouth import SinglePixelMouth
+from mouth import SinglePixelMouth, BigMouth
 
 import config
 
@@ -23,17 +23,18 @@ class Food(object):
     self._totalFood = self.totalFood()
     self._terminalEatenAmount = self._totalFood * config.terminationPercent / 100.0
 
-    self.mouth = SinglePixelMouth(self)
+    #self.mouth = SinglePixelMouth(self)
+    self.mouth = BigMouth(self)
 
 
-  def eat(self, pixelelID):
+  def eat(self, automata):
     '''
     Try to eat.  Return what did eat.
     '''
-    foodAtMouth = self.mouth.at(position=pixelelID)
+    foodAtMouth = self.mouth.at(automata)
     result = self.mouth.clamp(foodAtMouth)
     if result > 0:
-      self.mouth.updateFoodAt(pixelelID, foodAt=foodAtMouth, consumed=result)
+      self.mouth.updateFoodAt(automata, foodAt=foodAtMouth, consumed=result)
       self._eatenAmount += result
       ##print("Ate", result, " at ", pixelelID)
     return result
@@ -82,6 +83,7 @@ class Food(object):
   
     ## TODO this is not guaranteed to terminate
     ## return self.eatenAmount > ( self.places * 1 )
+  
   
   def eatenAmount(self):
     ''' How much food has been eaten by all automata, so far. '''

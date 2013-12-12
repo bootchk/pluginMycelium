@@ -106,7 +106,7 @@ class Automata(object):
     Try to eat.  Return size of meal eaten.
     Adjust reserves.
     '''
-    meal = self.field.food.eat(self.pixelelID())
+    meal = self.field.food.eat(automata=self)
     # A meal larger than metabolic rate increases reserves.
     self._reserves +=  meal - config.burnCalories
     if self._reserves <= 0:

@@ -77,6 +77,15 @@ class Direction(object):
     return Direction.unitCoords[self.index]
   
   
+  def swathCoords(self):
+    ''' 
+    Sequence of Direction's Coord, for this pixel and pixels to the side. 
+    '''
+    right = Direction.unitCoords[(self.index + 2) % 8]
+    left = Direction.unitCoords[(self.index - 2) % 8]
+    return (Coord( 0,0), left, right )
+  
+  
   def setOpposite(self, other):
     ''' Set self opposite to other. '''
     self.index = other.index - 4
@@ -88,5 +97,6 @@ class Direction(object):
     leftIndex = (self.index - 1 ) % 8
     rightIndex = (self.index + 1 ) % 8
     return Direction(cardinal=leftIndex), Direction(cardinal=rightIndex)
+  
   
   
