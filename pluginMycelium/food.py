@@ -1,7 +1,7 @@
 '''
 '''
 
-from array import array
+from mouth import Mouth
 
 import config
 
@@ -23,47 +23,31 @@ class Food(object):
     self._totalFood = self.totalFood()
     self._terminalEatenAmount = self._totalFood * config.terminationPercent / 100.0
 
+    self.mouth = Mouth(self)
 
 
   def eat(self, pixelelID):
     '''
-    Try to eat.  Return what I did eat.
+    Try to eat.  Return what did eat.
     '''
-    if self.pixmap.isClipped(pixelelID.coord):
-      result = 0
-    else:
-      foodAtMouth = self._foodAt(pixelelID)
-      result = self.clampToMouthSize(foodAtMouth)
-      if result > 0:
-        self.updateFoodAt(pixelelID, foodAt=foodAtMouth, consumed=result)
-        self._eatenAmount += result
-        ##print("Ate", result, " at ", pixelelID)
-    return result
-
-
-  def clampToMouthSize(self, foodAtMouth):
-    '''
-    Food consumed, in range [0,GUT_SIZE]
-    I can only eat so much, and no more than is available.
-    '''
-    if foodAtMouth > config.mealCalories:
-      result = config.mealCalories
-    else:
-      result = foodAtMouth
-    assert result >= 0 and result <= config.mealCalories
+    foodAtMouth = self.mouth.at(position=pixelelID)
+    result = self.mouth.clamp(foodAtMouth)
+    if result > 0:
+      self.mouth.updateFoodAt(pixelelID, foodAt=foodAtMouth, consumed=result)
+      self._eatenAmount += result
+      ##print("Ate", result, " at ", pixelelID)
     return result
       
         
   def isAvailableAt(self, pixelelID):
-    if self.pixmap.isClipped(pixelelID.coord):
-      result = False  # No food off the field
-    else:
-      result = self._foodAt(pixelelID) > 0
-    return result
+    return self.at(pixelelID) > 0
   
   
   def at(self, pixelelID):
-    ''' Food at pixelelID when pixelelID may need clipping. '''
+    ''' 
+    Food at pixelelID when pixelelID may need clipping. 
+    This is a sensor, not a mouth, i.e. what automata can sense, not what its mouth may get.
+    '''
     if self.pixmap.isClipped(pixelelID.coord):
       result = 0
     else:
@@ -81,21 +65,6 @@ class Food(object):
     '''
     return self.pixmap.getPixelel(pixelelID)
   
-  
-  def updateFoodAt(self, pixelelID, foodAt, consumed):
-    '''
-    Consume food.  
-    Note Pixmap does not support operand -= 
-    Pixmap value is an array
-    '''
-    remainingFood = foodAt - consumed
-    
-    ## Original code to assign whole pixel of one pixelel
-    ## self.pixmap[pixelelID.coord] =  array('B', (remainingFood, ))
-    
-    self.pixmap.setPixelel(pixelelID, remainingFood)
-
-    
     
   def totalFood(self):
     total = 0
