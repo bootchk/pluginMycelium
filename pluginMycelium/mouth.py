@@ -86,10 +86,15 @@ class SinglePixelMouth(Mouth):
 
 class BigMouth(Mouth):
   '''
-  Mouth whose range is pixels to the side (a patch, here from a swath).
+  Mouth whose range is pixels in a patch, i.e. neighboorhood of adjacent pixels.
+  In other words, mouth covers patch.
+  Here, at() and update() iterate over patch.
   
-  In other words, mouth covers a patch.
-  Here we iterate over a patch.
+  The patch shape depends on direction.swathCoords().
+  Typically, three pixels, the pixel under the automata and two to the side (a swath).
+  
+  Pragmatically, a big mouth gives coarser grain, since an automata, by eating around itself,
+  buffers itself from other automata, especially greedy automata.
   '''
   
   def _makePatch(self, automata):

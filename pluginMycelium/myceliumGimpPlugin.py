@@ -18,7 +18,7 @@ import config
 
 def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess, terminationPercent, greedy,
                        exhaustion, mealCalories, burnCalories, reservesToDivide,
-                       renderToGray, compose):
+                       renderToGray, compose, grain):
   
   config.startPattern = startPattern
   config.maxPopulation = maxPopulation
@@ -31,6 +31,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   config.reservesToDivide = int(reservesToDivide)
   config.renderToGray = renderToGray
   config.compose = compose
+  config.grain = grain
   
   
   # From image create an input pixmap to be food

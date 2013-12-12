@@ -7,6 +7,7 @@ Mode parameters
 '''
 renderToGray = True
 compose = 0
+grain = 0
 
 
 '''

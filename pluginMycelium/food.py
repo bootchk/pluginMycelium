@@ -23,8 +23,11 @@ class Food(object):
     self._totalFood = self.totalFood()
     self._terminalEatenAmount = self._totalFood * config.terminationPercent / 100.0
 
-    #self.mouth = SinglePixelMouth(self)
-    self.mouth = BigMouth(self)
+    if config.grain == 0:
+      # Single pixel mouth gives fine grain
+      self.mouth = SinglePixelMouth(self)
+    else:
+      self.mouth = BigMouth(self)
 
 
   def eat(self, automata):
