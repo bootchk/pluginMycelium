@@ -10,7 +10,7 @@ import config
 class Food(object):
   '''
   A map of food.
-  Wraps a grayscale pixmap (value of gray is the amount of food.)
+  Wraps a pixmap (value of pixelel is the amount of food.)
   '''
   
   def __init__(self, pixmap):
@@ -32,24 +32,24 @@ class Food(object):
     if self.pixmap.isClipped(pixelelID.coord):
       result = 0
     else:
-      result = self.whatICanEatAt(pixelelID)
+      foodAtMouth = self._foodAt(pixelelID)
+      result = self.clampToMouthSize(foodAtMouth)
       if result > 0:
-        self.updateFoodAt(pixelelID, result)
+        self.updateFoodAt(pixelelID, foodAt=foodAtMouth, consumed=result)
         self._eatenAmount += result
         ##print("Ate", result, " at ", pixelelID)
     return result
 
 
-  def whatICanEatAt(self, pixelelID):
+  def clampToMouthSize(self, foodAtMouth):
     '''
     Food consumed, in range [0,GUT_SIZE]
     I can only eat so much, and no more than is available.
     '''
-    # assert pixelelID is not clipped
-    if self._foodAt(pixelelID) > config.mealCalories:
+    if foodAtMouth > config.mealCalories:
       result = config.mealCalories
     else:
-      result = self._foodAt(pixelelID)
+      result = foodAtMouth
     assert result >= 0 and result <= config.mealCalories
     return result
       
@@ -82,13 +82,13 @@ class Food(object):
     return self.pixmap.getPixelel(pixelelID)
   
   
-  def updateFoodAt(self, pixelelID, consumed):
+  def updateFoodAt(self, pixelelID, foodAt, consumed):
     '''
     Consume food.  
     Note Pixmap does not support operand -= 
     Pixmap value is an array
     '''
-    remainingFood = self._foodAt(pixelelID) - consumed
+    remainingFood = foodAt - consumed
     
     ## Original code to assign whole pixel of one pixelel
     ## self.pixmap[pixelelID.coord] =  array('B', (remainingFood, ))
