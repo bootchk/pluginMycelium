@@ -1,7 +1,7 @@
 '''
 '''
 
-from mouth import Mouth
+from mouth import SinglePixelMouth
 
 import config
 
@@ -23,7 +23,7 @@ class Food(object):
     self._totalFood = self.totalFood()
     self._terminalEatenAmount = self._totalFood * config.terminationPercent / 100.0
 
-    self.mouth = Mouth(self)
+    self.mouth = SinglePixelMouth(self)
 
 
   def eat(self, pixelelID):
