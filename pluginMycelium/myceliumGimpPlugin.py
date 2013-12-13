@@ -102,16 +102,23 @@ def isPluginModeGray(image):
 
 def createGrayPixmapFromInImage(image):
   grayscaleImage = copyImageToGrayscale(image)
-  return flattenInvertAndToPixmap(grayscaleImage)
-  
+  #return flattenInvertAndToPixmap(grayscaleImage)
+  return flattenAndToPixmap(grayscaleImage)
   
 def createColorPixmapFromInImage(image):
   # We need a copy because user can continue to use Gimp?
   colorImageCopy = pdb.gimp_image_duplicate(image)
-  return flattenInvertAndToPixmap(colorImageCopy)
+  #return flattenInvertAndToPixmap(colorImageCopy)
+  return flattenAndToPixmap(colorImageCopy)
+
+
+def flattenAndToPixmap(image):
+  activeLayer = pdb.gimp_image_get_active_drawable(image)
+  pdb.gimp_layer_flatten(activeLayer)
+  return Pixmap(activeLayer)
   
 
-
+# NOT USED.  Originally we drew in black.
 def flattenInvertAndToPixmap(image):
   activeLayer = pdb.gimp_image_get_active_drawable(image)
   
@@ -156,7 +163,10 @@ def createColorOutImagePixmap(drawable):
   
   
 def fillDisplayAndToPixmap(outImage, layer):
-  pdb.gimp_edit_fill(layer, BACKGROUND_FILL)
+  '''
+  Originally we drew in black on white: pdb.gimp_edit_fill(layer, BACKGROUND_FILL)
+  '''
+  pdb.gimp_edit_fill(layer, FOREGROUND_FILL)  # black or whatever user chose.
   
   displayID = pdb.gimp_display_new(outImage)  # Make it visible on screen
   

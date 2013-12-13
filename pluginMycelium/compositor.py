@@ -26,12 +26,14 @@ class Compositor(object):
     else:
       return self.maximizeCompose
     
-  
-  def incrementCompose(self, pixelelID, amount):
+  '''
+  Gradual compose, slowly build in value as automatas metabolize.
+  '''
+  # NOT USED
+  def decrementCompose(self, pixelelID, amount):
     '''
-    Composes not binary, slowly build in value as automatas metabolize.
+    Subtract: Gimp is a brightness 'value' where larger is whiter, subtract amount towards black.
     '''
-    # Subtract: Gimp is a brightness 'value' where larger is whiter, subtract amount towards black.
     currentArtifact = self.pixmap.getPixelel(pixelelID)
     newArtifact = currentArtifact - amount
     if newArtifact < 0:
@@ -41,6 +43,26 @@ class Compositor(object):
     ## ORIGINAL FOR HARDCODED CHANNEL
     ## self.pixmap[position] = array('B', (newArtifact, ))
     
+    
+  def incrementCompose(self, pixelelID, amount):
+    '''
+    Increment a single channel by amount.
+    '''
+    currentArtifact = self.pixmap.getPixelel(pixelelID)
+    newArtifact = currentArtifact + amount
+    newArtifact = min(newArtifact, 255)
+    self.pixmap.setPixelel(pixelelID, newArtifact)
+    
+    
+  def incrementPixelCompose(self, pixelelID, amount):
+    '''
+    Increment all channels by amount.
+    '''
+    currentArtifact = self.pixmap.getPixelel(pixelelID)
+    newArtifact = currentArtifact + amount
+    newArtifact = min(newArtifact, 255)
+    self.pixmap.setPixelel(pixelelID, newArtifact)
+  
   
   def maximizeCompose(self, pixelelID, amount):
     '''
@@ -50,13 +72,17 @@ class Compositor(object):
     
     amount not used
     '''
-    self.pixmap.setPixelel(pixelelID, 0)
+    self.pixmap.setPixelel(pixelelID, 255)
     
     ## ORIGINAL FOR HARDCODED CHANNEL
     ## self.pixmap[pixelelID] = array('B', (0, ))
   
   
+  # NOT Used
   def replaceCompose(self, pixelelID, amount):
+    '''
+    Value given by the last (in time) to visit.
+    '''
     # monotonic, not remainder
     newValue = 255-amount
     if newValue < self.pixmap.getPixelel(pixelelID):
@@ -65,10 +91,10 @@ class Compositor(object):
     
       self.pixmap.setPixelel(pixelelID, newValue)
     
-    
+  # NOT Used
   def firstCompose(self, pixelelID, amount):
     '''
-    Only deposit if I am first to visit this pixel,
+    Value given by first to visit this pixel,
     and only deposit the first meal (on my first visit.)
     '''
     # assert pixelels were all initialized to 255 (white)
@@ -83,30 +109,52 @@ class Compositor(object):
     if first:
       self.pixmap.setPixelel(pixelelID, 255-amount)
       
-      
+  
   def ownCompose(self, pixelelID, amount):
     '''
-    Only deposit if I am first to visit this pixel,
+    Only deposit if an automata of my channel class was first to visit this pixel,
     but increment pixelel value with meals from second visits.
-    I.E. once I visit a pixel, I own it.
+    I.E. once a pixel is first visited by an automata, all automata having the same channel can deposit.
     '''
-    # assert pixelels were all initialized to 255 (white)
+    owned, visitedPixelelID = self.isOwned(pixelelID)
+    
+    if not owned:
+      '''
+      No channel class owns it (I am first to visit.)
+      Composing from it establishes ownership.
+      '''
+      self.incrementCompose(pixelelID, amount)
+    else:
+      '''
+      Some channel class of automata owns it.  If that channel matches my channel, compose.
+      '''
+      if visitedPixelelID == pixelelID.pixelelIndex:
+        self.incrementCompose(pixelelID, amount)
+    
+  
+  def isOwned(self, pixelelID):
+    ''' 
+    Whether some channel (pixelelIndex) class of automata owns, and which channel class owns it.
+    Is pixel owned by class of automata of certain channel? 
+    '''
+    
+    # assert pixelels were all initialized to 0 (black)
+    # WAS 255 (white)
     pixel = self.pixmap[pixelelID.coord]
     
-    first = True
+    owned = False
     pixelelIndex = 0
     for pixelel in pixel:
-      if pixelel < 255:
-        first = False
+      if pixelel > 0:  # WAS < 255:
+        owned = True
         break
       pixelelIndex += 1
-    
-    # x=>y is equivalent to (not x) or y
-    
-    # first => pixelelIndex==pixmap.bpp
-    assert (not first) or pixelelIndex == self.pixmap.bpp
-    
-    # If first, or not the first but previous visitor visited same pixelel (channel)
-    if first or (pixelelIndex < self.pixmap.bpp and pixelelIndex == pixelelID.pixelelIndex):
-      self.incrementCompose(pixelelID, amount)
+      
+    # Logically, 'x implies y' is equivalent to '(not x) or y'
+    # Thus 'owned implies pixelelIndex<pixmap.bpp' is equivalent to as follows:
+    assert (not owned) or pixelelIndex < self.pixmap.bpp
+    return owned, pixelelIndex
+  
+  
+  
     
