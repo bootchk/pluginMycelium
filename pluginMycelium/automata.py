@@ -123,12 +123,22 @@ class Automata(object):
   
   def migrate(self):
     '''
-    To pixel farther away, in a random direction.
+    To pixel a middle distance away, uniformly random,
+    OR to a uniformly random coord on field.
     
-    TODO this should be a fraction of the image size
+    TODO 'middle distance' i.e. 15 should be a fraction of the image size
+    
+    In earlier designs, we allowed an automata to migrate off the field.
+    The reasoning was, that would let automata migrate off and back on,
+    and avoid edge effects.  However, it probably wasted a lot of CPU cycles
+    on automata off the field.  So here, migration stays on field.
+    
+    Note that automata can still move off field, but then they exhaust, and then die or migrate.
     '''
     randomCoord = Coord(random.randint(-15, 15), random.randint(-15, 15))
     self.position = self.position + randomCoord
+    if self.field.food.pixmap.isClipped(self.position):
+      self.position = self.field.randomCoordOn()
     ##print("migrate to", self.position)
     
   
@@ -223,7 +233,7 @@ class Automata(object):
     Artifact of metabolism i.e. eating.
     
     Self need not be exhausted (might have reserves).  But might not have just eaten (meal might be 0.)
-    Self may have reserves but wandered off field.
+    Self may have reserves but in some designs, might be wandered off field.
     
     Whether current position has food, is on the field, etc. depends on the order in which sub-behaviours are called.
     

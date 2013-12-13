@@ -104,10 +104,17 @@ class Field(object):
     # ??? if user does not touch population, is a float?  So cast it to int.
     assert config.maxPopulation > 0
     for _ in range(0, int(config.maxPopulation)):
-      x = random.randint(0, self.frame.width)
-      y = random.randint(0, self.frame.height)
-      coord = Coord(x, y)
-      automata = self.automataFactory.produce(position=coord, field=self)
+      automata = self.automataFactory.produce(position=self.randomCoordOn(), field=self)
       self.append(automata)
       
+      
+  def randomCoordOn(self):
+    '''
+    Coord chosen uniformly randomly that is on the field (not clipped.)
+    '''
+    x = random.randint(0, self.frame.width)
+    y = random.randint(0, self.frame.height)
+    coord = Coord(x, y)
+    return coord
+  
   
