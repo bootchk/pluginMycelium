@@ -52,7 +52,7 @@ Structure
 
 plugin-mycelium.py is the 'main' of the plugin, that GIMP finds in it's plugin directory.   It is just a shell, most of the action is in the Python package pluginMycelium which it imports from the same directory.
 
-In the package, myceliumGimpPlugin.py is the 'main'.  Other files define classes that it uses.
+In the package, myceliumGimpPlugin.py is the 'main'.  Other files define classes that it uses.  The main class is AutomataSimulator (the plugin is a simulation) and Automata is the class of the simulated objects.
 
 
 
@@ -89,7 +89,7 @@ Explanation
 
 Myce are like mycelium or mice.  They consume from the input image and appear in the output image.  Considered as mycelium, they grow linearly, like threads.  Considered as mice, they move, leaving a trail of deposits.
 
-The tradition of 'worm automata' is misleading: all the action (feeding and depositing) is at a point, the head of the worm.  The result might look like a worm, but the automata are not shaped like a worm.  And the result might not be wormy or thready.
+The tradition of 'worm automata' is misleading: all the action (feeding and depositing) is at a point, the head of the worm.  The result might look like a worm, but the automata are not shaped like a worm.  And the result might not be wormy or thready (when it runs a long time.)
 
 Different myce instances may occupy the same pixel.
 
@@ -105,7 +105,7 @@ Myce can divide if their reserves are large enough.
 
 Myce with no reserves and not eating might migrate.  Migrate means randomly jump to another pixel at a middle distance.
 
-Myce only deposit if they eat.  Thus their trail might have gaps.
+Myce only deposit if they eat.  Thus their trail might have gaps (if they move while living off their reserves, or if they migrate.)
 
 
 
@@ -134,12 +134,18 @@ Myce divide on reserves of: how much reserves cause a myce to divide (splitting 
 
 Compose: how what a myce deposits is composed with what has been deposited earlier (by itself, or by other myce.)
 
+Grain: the graininess or granularity of the effect.  If 'Coarse', a myce eats a swath of pixelelels (of the same channel) from a neighborhood of pixels, instead of just one pixelel, and deposits to one pixelel.  If 'Greedy' is also chosen, this tends to keep myce separated and non-crossing.  In other words, myce may have a wide-mouth.
 
+
+Inverting
+---------
+
+Myce currently deposit RGB or GRAY pixelel values on a black background.  The plugin has no 'Invert' parameter, but you can invert an image, run the plugin, and invert the results, for a different effect.  (I'm still exploring whether an 'Invert' parameter and a subtractive compose mode would offer novel effects.)
 
 TODO
 ----
 
-Swathing: myce consume from a neighborhood (blur.)
+Compose by pixel: myce are specialized to a pixelel, but they eat and deposit all the pixelels of the pixel they are on, in the amount of their specialized pixelel.
 
 Crossing: myce won't cross each other's trails.
 
