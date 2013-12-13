@@ -81,7 +81,7 @@ class SinglePixelMouth(Mouth):
     ## Original code to assign whole pixel of one pixelel
     ## self.pixmap[pixelelID.coord] =  array('B', (remainingFood, ))
     
-    self.food.pixmap.setPixelel(automata.pixelelID(), remainingFood)
+    self.food.set(automata.pixelelID(), remainingFood)
     
 
 
@@ -156,7 +156,7 @@ class BigMouth(Mouth):
       # Don't eat more from this pixel than ToConsume
       clamped = min(foodAt, yetToConsume)
       remainingFood = foodAt - clamped
-      self.food.pixmap.setPixelel(pixelelID, remainingFood)
+      self.food.set(pixelelID, remainingFood)
       yetToConsume -= clamped
       if yetToConsume <= 0:
         break

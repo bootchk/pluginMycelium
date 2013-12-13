@@ -39,7 +39,9 @@ class Food(object):
   
   
   def at(self, pixelelID):
-    ''' 
+    '''
+    Getter.
+    
     Food at pixelelID when pixelelID may need clipping. 
     This is a sensor, not a mouth, i.e. what automata can sense, not what its mouth may get.
     '''
@@ -50,6 +52,12 @@ class Food(object):
     return result
   
   
+  def set(self, pixelelID, amount):
+    '''
+    '''
+    self.pixmap.setPixelel(pixelelID, amount)
+    
+    
   def _foodAt(self, pixelelID):
     ''' 
     Knows how to convert pixmap to food.
