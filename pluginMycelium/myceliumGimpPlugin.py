@@ -34,8 +34,11 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   config.compose = compose
   config.grain = grain
   
-  # After config is set, specialize the Direction class with user's choice of squirminess
-  Direction.setSquirminess()
+  # After config is set, specialize Direction class with user's choice of squirminess
+  Direction.setSquirminess(config.squirminess)
+  
+  # After config is set, specialize Automata class with user's choice of greedy
+  Automata.setChangeDirectionMethod(config.greedy)
   
   # From image create an input pixmap to be food
   inputPixmap = createInputPixmap(image)

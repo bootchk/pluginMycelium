@@ -4,9 +4,6 @@ import random
 
 from pixmap.coord import Coord
 
-import config
-
-
 
 class Direction(object):
   '''
@@ -38,16 +35,16 @@ class Direction(object):
   squirminess = None
   
   @classmethod
-  def setSquirminess(cls):
+  def setSquirminess(cls, squirminess):
     '''
     Set class's squirminess (choices for turning) by dispatch on parameter.
     Static over life of program and automata.
     '''
-    if config.squirminess == 0: # Relaxed, straight (no turn) is a choice
+    if squirminess == 0: # Relaxed, straight (no turn) is a choice
       result = [-1, 0, 1]
-    elif config.squirminess == 1:
+    elif squirminess == 1:
       result = [1, -1] # Curly, always turn, but slightly
-    elif config.squirminess == 2:
+    elif squirminess == 2:
       result = [-2, 0, 2] # Kinky, hard turn or straight
     else:
       result = [-1, 0, 1, 4]  # Plodding: relaxed or reverse

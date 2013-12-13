@@ -10,8 +10,6 @@ from pixmap.coord import Coord
 from pixmap.pixelelID import PixelelID
 
 import config
-#from config import HEALTH_TO_PROCREATE as HEALTH_TO_PROCREATE
-#from config import HEALTH_DAILY_METABOLISM as HEALTH_DAILY_METABOLISM
 
 
   
@@ -37,7 +35,18 @@ class Automata(object):
   Operates on an image, where image has 3 dimensions: 2D coord and 1D pixelel (channel)
   '''
   
+  changeDirectionMethod = None
   
+  @classmethod
+  def setChangeDirectionMethod(cls, greedy):
+    # Set behaviour by binding to one of two methods
+    if greedy:
+      Automata.changeDirectionMethod = Automata._greedyChangeDirection
+    else:
+      Automata.changeDirectionMethod = Automata._nonGreedyChangeDirection
+    
+    
+    
   def __init__(self, position, field, direction=None, reserves=None, channel=0):
     assert position is not None
     assert field is not None
@@ -56,11 +65,7 @@ class Automata(object):
     else:
       self.direction = direction
     
-    # Set behaviour by binding to one of two methods
-    if config.greedy:
-      self.changeDirectionMethod = self._greedyChangeDirection
-    else:
-      self.changeDirectionMethod = self._nonGreedyChangeDirection
+    
     
     
   '''
@@ -149,7 +154,7 @@ class Automata(object):
     '''
     # Call the method bound at init time
     # TODO subclasses and factories
-    self.changeDirectionMethod()
+    Automata.changeDirectionMethod(self)
   
   
   def _nonGreedyChangeDirection(self):
