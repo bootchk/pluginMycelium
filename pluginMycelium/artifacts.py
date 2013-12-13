@@ -22,7 +22,7 @@ class Artifacts(Compositor, object):
     self.pixmap.flushAll()
     
     
-  def depositAt(self, pixelelID, amount):
+  def depositAt(self, automata, amount):
     '''
     Deposit pixelel value at pixelelID using compose method.
     
@@ -32,8 +32,8 @@ class Artifacts(Compositor, object):
     Whether the amount is from this period (pixel) or a previous period depends on the caller, not a concern here.
     '''
     # not assert amount > 0
-    if not self.pixmap.isClipped(pixelelID.coord):
-      self.compose(pixelelID, amount)
+    if not self.pixmap.isClipped(automata.position):  # OLD pixelelID.coord):
+      self.compose(automata, amount)
     else:
       '''
       !!! A deposit off the field dissappears from view, but is not a RuntimeError

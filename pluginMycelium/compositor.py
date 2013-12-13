@@ -30,10 +30,11 @@ class Compositor(object):
   Gradual compose, slowly build in value as automatas metabolize.
   '''
   # NOT USED
-  def decrementCompose(self, pixelelID, amount):
+  def decrementCompose(self, automata, amount):
     '''
     Subtract: Gimp is a brightness 'value' where larger is whiter, subtract amount towards black.
     '''
+    pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
     newArtifact = currentArtifact - amount
     if newArtifact < 0:
@@ -44,27 +45,42 @@ class Compositor(object):
     ## self.pixmap[position] = array('B', (newArtifact, ))
     
     
-  def incrementCompose(self, pixelelID, amount):
+  def incrementCompose(self, automata, amount):
     '''
     Increment a single channel by amount.
     '''
+    pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
     newArtifact = currentArtifact + amount
     newArtifact = min(newArtifact, 255)
     self.pixmap.setPixelel(pixelelID, newArtifact)
     
     
-  def incrementPixelCompose(self, pixelelID, amount):
+  def incrementPixelCompose(self, automata, amount):
     '''
-    Increment all channels by amount.
+    Increment all channels by amount, or whatever food is at.
+    
+    Automata are specialized to move on a channel, but here, they consume and deposit other channels,
+    of pixel of automata.
     '''
-    currentArtifact = self.pixmap.getPixelel(pixelelID)
-    newArtifact = currentArtifact + amount
-    newArtifact = min(newArtifact, 255)
-    self.pixmap.setPixelel(pixelelID, newArtifact)
+    pixelelID = automata.pixelelID()
+    for pixelelIndex in range(0, self.pixmap.bpp):
+      channel = PixelelID(pixelelID.coord, pixelelIndex)
+      
+      # Get food at pixelel
+      
+      # Deposit
+      currentArtifact = self.pixmap.getPixelel(pixelelID)
+      newArtifact = currentArtifact + amount
+      newArtifact = min(newArtifact, 255)
+      self.pixmap.setPixelel(pixelelID, newArtifact)
+      
+      # Update foo
+    
   
   
-  def maximizeCompose(self, pixelelID, amount):
+  
+  def maximizeCompose(self, automata, amount):
     '''
     Compose boolean: black 0 or white 255.
     
@@ -72,17 +88,18 @@ class Compositor(object):
     
     amount not used
     '''
-    self.pixmap.setPixelel(pixelelID, 255)
+    self.pixmap.setPixelel(automata.pixelelID(), 255)
     
     ## ORIGINAL FOR HARDCODED CHANNEL
     ## self.pixmap[pixelelID] = array('B', (0, ))
   
   
   # NOT Used
-  def replaceCompose(self, pixelelID, amount):
+  def replaceCompose(self, automata, amount):
     '''
     Value given by the last (in time) to visit.
     '''
+    pixelelID = automata.pixelelID()
     # monotonic, not remainder
     newValue = 255-amount
     if newValue < self.pixmap.getPixelel(pixelelID):
@@ -92,12 +109,13 @@ class Compositor(object):
       self.pixmap.setPixelel(pixelelID, newValue)
     
   # NOT Used
-  def firstCompose(self, pixelelID, amount):
+  def firstCompose(self, automata, amount):
     '''
     Value given by first to visit this pixel,
     and only deposit the first meal (on my first visit.)
     '''
     # assert pixelels were all initialized to 255 (white)
+    pixelelID = automata.pixelelID()
     pixel = self.pixmap[pixelelID.coord]
     
     first = True
@@ -110,26 +128,26 @@ class Compositor(object):
       self.pixmap.setPixelel(pixelelID, 255-amount)
       
   
-  def ownCompose(self, pixelelID, amount):
+  def ownCompose(self, automata, amount):
     '''
     Only deposit if an automata of my channel class was first to visit this pixel,
     but increment pixelel value with meals from second visits.
     I.E. once a pixel is first visited by an automata, all automata having the same channel can deposit.
     '''
-    owned, visitedPixelelID = self.isOwned(pixelelID)
+    owned, visitedPixelelID = self.isOwned(automata.pixelelID())
     
     if not owned:
       '''
       No channel class owns it (I am first to visit.)
       Composing from it establishes ownership.
       '''
-      self.incrementCompose(pixelelID, amount)
+      self.incrementCompose(automata, amount)
     else:
       '''
       Some channel class of automata owns it.  If that channel matches my channel, compose.
       '''
-      if visitedPixelelID == pixelelID.pixelelIndex:
-        self.incrementCompose(pixelelID, amount)
+      if visitedPixelelID == automata.pixelelIndex:
+        self.incrementCompose(automata, amount)
     
   
   def isOwned(self, pixelelID):

@@ -274,13 +274,13 @@ class Automata(object):
     '''
     if not self.isStarved():
       # !!! Cannot assert: not isClipped(self.position)
-      self.field.artifacts.depositAt(self.pixelelID(), amount=meal)
+      self.field.artifacts.depositAt(self, amount=meal) # OLD self.pixelelID(), amount=meal)
       
       
   # Alternative 2
   def _poopMealIfAte(self, meal):
     # Assert this will not alter artifacts if meal is zero
-    self.field.artifacts.depositAt(self.pixelelID(), amount=meal)
+    self.field.artifacts.depositAt(self, amount=meal) # OLD self.pixelelID(), amount=meal)
   
   
     
