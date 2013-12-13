@@ -45,7 +45,7 @@ class Artifacts(Compositor, object):
         
         With a non-toroidal field, we get many zero deposits off the field (wandered automata.)
         '''
-        print("Non-zero deposit off the field?")
+        print "Non-zero deposit off the field?"
       pass
     
     

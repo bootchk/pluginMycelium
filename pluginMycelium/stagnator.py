@@ -27,7 +27,7 @@ class Stagnator(object):
       if delta < 20:
         self.countStagnantPeriods += 1
         if self.countStagnantPeriods > 10:
-          print("Stagnated")
+          print "Stagnated"
           result = True
         else:
           result = False

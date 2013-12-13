@@ -51,7 +51,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   simulator.simulate()
   simulator.flush()
   
-  print("plugin done")
+  #print("plugin done")
   
   '''
   No clean up: we only created one image that user will receive.  

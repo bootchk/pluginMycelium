@@ -31,7 +31,7 @@ class Field(object):
   
   def append(self, automata):
     self.automata.append(automata)
-    print("append Automata ", len(self.automata) )
+    #print("append Automata ", len(self.automata) )
     
   def kill(self, automata):
     ''' Remove automata from field. '''

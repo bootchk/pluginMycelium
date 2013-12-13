@@ -25,15 +25,15 @@ class AutomataFactory(object):
 
   def produce(self, **kwargs):
     '''
-    Instance of some Automata subclass.
+    Instance of some Automata subclass, or some specialization.
+    
+    Here we are specialize produced instance by assigning a channel to it.
     '''
     if not 'channel' in kwargs:
-      print("No channel to produce")
-      '''
-      '''
+      #print("Unspecified channel to produce")
       return self.automataClass(channel=self.chooseChannel(), **kwargs )
     else:
-      print("Channel to produce")
+      #print("Specified channel to produce")
       return self.automataClass(**kwargs)
   
   
