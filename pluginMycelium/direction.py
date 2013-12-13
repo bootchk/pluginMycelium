@@ -34,31 +34,14 @@ class Direction(object):
                 Coord( 1, 0),  # E
                 ]
   
+  # Class attribute squirminess.  All automata have the same squirminess
+  squirminess = None
   
-  def __init__(self, cardinal=None):
-    if cardinal is None:
-      # initialize randomly
-      self.index=random.randint(0,7)
-    else:
-      assert cardinal >= 0 and cardinal <=7
-      self.index = cardinal
-      
-    # Precompute static squirminess of self
-    self.squirminess = self.setSquirminessChoices()
-  
-  
-  def tweak(self):
-    ''' Change direction slightly, to next or previous. '''
-    choice = random.choice(self.squirminess)
-    self.index += choice
-    self.index = self.index % 8 # modulo
-  
-  
-  def setSquirminessChoices(self):
+  @classmethod
+  def setSquirminess(cls):
     '''
-    Choices for turning.
-    Dispatch on parameter.
-    Static over life of automata.
+    Set class's squirminess (choices for turning) by dispatch on parameter.
+    Static over life of program and automata.
     '''
     if config.squirminess == 0: # Relaxed, straight (no turn) is a choice
       result = [-1, 0, 1]
@@ -69,7 +52,24 @@ class Direction(object):
     else:
       result = [-1, 0, 1, 4]  # Plodding: relaxed or reverse
     # [-2, -1, 0, 1, 2]
-    return result
+    Direction.squirminess = result
+  
+  
+  
+  def __init__(self, cardinal=None):
+    if cardinal is None:
+      # initialize randomly
+      self.index=random.randint(0,7)
+    else:
+      assert cardinal >= 0 and cardinal <=7
+      self.index = cardinal
+      
+  
+  def tweak(self):
+    ''' Change direction slightly, to next or previous. '''
+    choice = random.choice(Direction.squirminess)
+    self.index += choice
+    self.index = self.index % 8 # modulo
     
     
   def unitCoordFor(self):

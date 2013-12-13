@@ -13,6 +13,7 @@ from frame import Frame
 from food import Food
 from artifacts import Artifacts
 from field import Field
+from direction import Direction
 import config
 
 
@@ -33,6 +34,8 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   config.compose = compose
   config.grain = grain
   
+  # After config is set, specialize the Direction class with user's choice of squirminess
+  Direction.setSquirminess()
   
   # From image create an input pixmap to be food
   inputPixmap = createInputPixmap(image)
