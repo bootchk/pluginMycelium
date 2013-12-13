@@ -5,6 +5,7 @@ import random
 
 from copy import copy
 from direction import Direction
+from mouth import SinglePixelMouth, BigMouth
 
 from pixmap.coord import Coord
 from pixmap.pixelelID import PixelelID
@@ -45,6 +46,16 @@ class Automata(object):
     else:
       Automata.changeDirectionMethod = Automata._nonGreedyChangeDirection
     
+  
+  mouth = None
+  
+  @classmethod
+  def setMouth(cls, grain, food):
+    if grain == 0:
+      # Single pixel mouth gives fine grain
+      Automata.mouth = SinglePixelMouth(food)
+    else:
+      Automata.mouth = BigMouth(food)
     
     
   def __init__(self, position, field, direction=None, reserves=None, channel=0):

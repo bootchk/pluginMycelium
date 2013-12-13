@@ -18,6 +18,7 @@ class Mouth(object):
   def __init__(self, food):
     self.food = food  # mouth knows food
   
+  
   def clamp(self, foodAtMouth):
     '''
     Food consumed, in range [0, mouth_size]

@@ -44,6 +44,9 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   inputPixmap = createInputPixmap(image)
   food = Food(inputPixmap) # wrap pixmap, consider it food
   
+  # After config is set, specialize Automata class with user's choice of grain (mouth size)
+  Automata.setMouth(config.grain, food)
+  
   # output images out
   outputPixmap = createOutImagePixmap(image, drawable)
   artifacts = Artifacts(outputPixmap) # wrap pixmap, consider it artifact
@@ -75,8 +78,9 @@ And that is probably the most common use case.
 And a user could use a grayscale plugin to render in colors by decompose, execute, recompose on color channels.
 So this is largely for user convenience.
 
-Except that the effect 'colored worms but only the top worm displays'
+Except that certain effects e.g. 'colored worms but only the top worm displays' (compose=ownership)
 might not be easily doable by a user with only a grayscale plugin.
+And other effects might not be doable.
 '''
   
 def createInputPixmap(image):

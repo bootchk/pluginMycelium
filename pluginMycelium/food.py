@@ -1,10 +1,7 @@
 '''
 '''
 
-from mouth import SinglePixelMouth, BigMouth
-
 import config
-
 
 
 class Food(object):
@@ -23,21 +20,15 @@ class Food(object):
     self._totalFood = self.totalFood()
     self._terminalEatenAmount = self._totalFood * config.terminationPercent / 100.0
 
-    if config.grain == 0:
-      # Single pixel mouth gives fine grain
-      self.mouth = SinglePixelMouth(self)
-    else:
-      self.mouth = BigMouth(self)
-
 
   def eat(self, automata):
     '''
     Try to eat.  Return what did eat.
     '''
-    foodAtMouth = self.mouth.at(automata)
-    result = self.mouth.clamp(foodAtMouth)
+    foodAtMouth = automata.mouth.at(automata)
+    result = automata.mouth.clamp(foodAtMouth)
     if result > 0:
-      self.mouth.updateFoodAt(automata, foodAt=foodAtMouth, consumed=result)
+      automata.mouth.updateFoodAt(automata, foodAt=foodAtMouth, consumed=result)
       self._eatenAmount += result
       ##print("Ate", result, " at ", pixelelID)
     return result
