@@ -11,6 +11,18 @@ class Compositor(object):
   Mixin behaviour for Artifacts.
   
   Determines compose method for depositing pixelel values.
+  
+  Compose from a meal.
+  
+  Meal might have consumed many pixelels:
+  - neighbor pixel's pixelels
+  - many pixelels of one pixel
+  
+  Meal might have more total value than can deposit in one pixelel (255.)
+  
+  Compose might change many pixelels (e.g. all pixelels of pixel)
+  
+  Compose might be shifting values from one pixelel to another.
   '''
   
   
@@ -33,13 +45,13 @@ class Compositor(object):
   Gradual compose, slowly build in value as automatas metabolize.
   '''
   # NOT USED
-  def decrementCompose(self, automata, amount):
+  def decrementCompose(self, automata, meal):
     '''
     Subtract: Gimp is a brightness 'value' where larger is whiter, subtract amount towards black.
     '''
     pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
-    newArtifact = currentArtifact - amount
+    newArtifact = currentArtifact - meal
     if newArtifact < 0:
       newArtifact = 0 # clamp
     self.pixmap.setPixelel(pixelelID, newArtifact)
@@ -48,20 +60,21 @@ class Compositor(object):
     ## self.pixmap[position] = array('B', (newArtifact, ))
     
     
-  def incrementCompose(self, automata, amount):
+  def incrementCompose(self, automata, meal):
     '''
-    Increment a single channel by amount.
+    Increment a single pixelel (channel) by meal.
     '''
     pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
-    newArtifact = currentArtifact + amount
-    newArtifact = min(newArtifact, 255)
+    newArtifact = currentArtifact + meal.maxAmount()
+    ## TODO for swath, sumAmount clamped to 255
+    ## newArtifact = min(newArtifact, 255)
     self.pixmap.setPixelel(pixelelID, newArtifact)
     
     
-  def incrementPixelCompose(self, automata, amount):
+  def incrementPixelCompose(self, automata, meal):
     '''
-    Increment all channels by amount, or whatever food is at.
+    Increment all channels by amount from meal, or whatever food is at.
     
     Automata are specialized to move on a channel.
     But here, they consume and deposit other channels of pixel of automata.
@@ -99,13 +112,13 @@ class Compositor(object):
       '''
   
   
-  def maximizeCompose(self, automata, amount):
+  def maximizeCompose(self, automata, meal):
     '''
     Compose boolean: black 0 or white 255.
     
     Second visits are redundant: set it to same value again.
     
-    amount not used
+    meal not used.  Assert not meal.isEmpty()? But this might be a way to implement slime.
     '''
     self.pixmap.setPixelel(automata.pixelelID(), 255)
     

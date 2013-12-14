@@ -2,15 +2,20 @@
 
 '''
 import random
-
 from copy import copy
-from direction import Direction
-from mouth import SinglePixelMouth, BigMouth
 
 from pixmap.coord import Coord
 from pixmap.pixelelID import PixelelID
 
 import config
+
+from direction import Direction
+from singlePixelMouth import SinglePixelMouth
+from bigMouth import BigMouth
+
+
+
+
 
 
   
@@ -124,7 +129,7 @@ class Automata(object):
     '''
     meal = self.field.food.eat(automata=self)
     # A meal larger than metabolic rate increases reserves.
-    self._reserves +=  meal - config.burnCalories
+    self._reserves +=  meal.size() - config.burnCalories
     if self._reserves <= 0:
       self.setStarved()
     return meal
@@ -232,7 +237,7 @@ class Automata(object):
     
     Alternative: migrate if starved regardless whether we ate.
     '''
-    if self.isStarved() and meal <= 0:
+    if self.isStarved() and meal.isEmpty():
       if config.exhaustion == 0:
         '''
         Perish: remove myself from population.
@@ -279,8 +284,9 @@ class Automata(object):
       
   # Alternative 2
   def _poopMealIfAte(self, meal):
-    # Assert this will not alter artifacts if meal is zero
-    self.field.artifacts.depositAt(self, amount=meal) # OLD self.pixelelID(), amount=meal)
+    # Don't deposit if meal.isEmpty() since some compose methods might ignore meal e.g. maximize
+    if not meal.isEmpty():
+      self.field.artifacts.depositAt(self, meal=meal) # OLD self.pixelelID(), amount=meal)
   
   
     

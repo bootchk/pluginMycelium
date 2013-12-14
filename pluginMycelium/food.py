@@ -25,13 +25,14 @@ class Food(object):
     '''
     Try to eat.  Return what did eat.
     '''
-    foodAtMouth = automata.mouth.at(automata)
-    result = automata.mouth.clamp(foodAtMouth)
-    if result > 0:
-      automata.mouth.updateFoodAt(automata, foodAt=foodAtMouth, consumed=result)
-      self._eatenAmount += result
+    mealAtMouth = automata.mouth.mealAt(automata)
+    #mealConsumed = automata.mouth.clamp(mealAtMouth)
+    mealConsumed = mealAtMouth.clamp()
+    if not mealConsumed.isEmpty():
+      automata.mouth.updateFoodAt(automata, mealAtMouth=mealAtMouth, mealConsumed=mealConsumed)
+      self._eatenAmount += mealConsumed.size()
       ##print("Ate", result, " at ", pixelelID)
-    return result
+    return mealConsumed
       
         
   def isAvailableAt(self, pixelelID):
@@ -54,6 +55,9 @@ class Food(object):
   
   def set(self, pixelelID, amount):
     '''
+    
+    Note Pixmap does not support operand -=   Pixmap value is an array.
+    i.e. self.pixmap[coord][0] -= 1 doesn't work.
     '''
     self.pixmap.setPixelel(pixelelID, amount)
     
