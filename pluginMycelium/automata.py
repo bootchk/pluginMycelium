@@ -11,7 +11,8 @@ import config
 
 from direction import Direction
 from singlePixelMouth import SinglePixelMouth
-from bigMouth import BigMouth
+from wideMouth import WideMouth
+from deepMouth import DeepMouth
 
 
 
@@ -59,8 +60,10 @@ class Automata(object):
     if grain == 0:
       # Single pixel mouth gives fine grain
       Automata.mouth = SinglePixelMouth(food)
+    elif grain == 1:
+      Automata.mouth = DeepMouth(food)
     else:
-      Automata.mouth = BigMouth(food)
+      Automata.mouth = WideMouth(food)
     
     
   def __init__(self, position, field, direction=None, reserves=None, channel=0):

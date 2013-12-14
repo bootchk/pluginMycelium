@@ -33,7 +33,8 @@ class Compositor(object):
     Dispatched on setting.
     '''
     if config.compose == 0:
-      return self.incrementCompose
+      ##return self.incrementSumCompose
+      return self.incrementPixelCompose
     elif config.compose == 1:
       return self.ownCompose
     elif config.compose == 2:
@@ -62,7 +63,9 @@ class Compositor(object):
     
   def incrementCompose(self, automata, meal):
     '''
-    Increment a single pixelel (channel) by meal.
+    Increment a single pixelel (channel) by max channel from meal.
+    
+    If meal ate from many pixelels, this may reduce brightness.
     '''
     pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
@@ -72,44 +75,39 @@ class Compositor(object):
     self.pixmap.setPixelel(pixelelID, newArtifact)
     
     
+  def incrementSumCompose(self, automata, meal):
+    '''
+    Increment a single pixelel (channel) by sum channels from meal.
+    
+    If meal ate from many pixelels, this reduces resolution
+    and might reduce brightness.
+    '''
+    pixelelID = automata.pixelelID()
+    currentArtifact = self.pixmap.getPixelel(pixelelID)
+    newArtifact = currentArtifact + meal.size() # totalCalories
+    newArtifact = min(newArtifact, 255)
+    self.pixmap.setPixelel(pixelelID, newArtifact)
+    
+    
   def incrementPixelCompose(self, automata, meal):
     '''
-    Increment all channels by amount from meal, or whatever food is at.
+    Increment all pixelels of artifacts by corresponding portions from meal.
     
     Automata are specialized to move on a channel.
     But here, they consume and deposit other channels of pixel of automata.
     
-    For grayscale, this is equivalent to incrementCompose (since there are no other channels of pixel.)
+    For grayscale and singlePixelMouth, this is equivalent to incrementCompose (since there are no other channels of pixel.)
     
-    TODO Did we already eat food before calling this, so we are double eating?
+    Note we already ate food, and this should not concern itself with food.
     '''
-    coord = automata.position
-    for pixelelIndex in range(0, self.pixmap.bpp):
-      channel = PixelelID(coord, pixelelIndex)
-      
-      # Get food at pixelel
-      # TODO use mouth   foodAt = automata.mouth.at()
-      # For now, mouth knows food, but we don't ask mouth to get food
-      foodAt = automata.mouth.food.at(channel)
-      consumed = min(amount, foodAt)
-      remainingFood = foodAt - consumed
-      
-      # Deposit
+    for portion in meal.portions:
+      channel = portion.pixelelID
       currentArtifact = self.pixmap.getPixelel(channel)
-      newArtifact = currentArtifact + consumed
+      newArtifact = currentArtifact + portion.amount
+      # If meal is shifting values from one pixelel to another, must clamp
       newArtifact = min(newArtifact, 255)
       self.pixmap.setPixelel(channel, newArtifact)
-      
-      # Update food
-      # TODO tell mouth to set
-      automata.mouth.food.set(channel, remainingFood)
-      
-      # TODO we are eating food without telling Food, so it's accounting is wrong
-    
-      '''
-      TODO migrate this to food.eatWholePixels and change eat() to eatChannel
-      Then pass amount as a sequence, and here, just update the pixel, without any knowing about food.
-      '''
+
   
   
   def maximizeCompose(self, automata, meal):
