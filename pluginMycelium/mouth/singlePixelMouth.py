@@ -1,8 +1,9 @@
 '''
 '''
-from mouth import Mouth
-from meal import Meal
-from portion import Portion
+from .mouth import Mouth
+from pluginMycelium.meal import Meal
+from pluginMycelium.portion import Portion
+
 
 
 class SinglePixelMouth(Mouth):

@@ -2,9 +2,9 @@
 '''
 
 
-from bigMouth import BigMouth
-from meal import Meal
-from portion import Portion
+from .bigMouth import BigMouth
+from pluginMycelium.meal import Meal
+from pluginMycelium.portion import Portion
 
 
 class DeepMouth(BigMouth):

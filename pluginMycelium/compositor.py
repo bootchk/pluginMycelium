@@ -1,8 +1,6 @@
 '''
 '''
 
-from pixmap.pixelelID import PixelelID
-
 import config
 
 
@@ -70,8 +68,6 @@ class Compositor(object):
     pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
     newArtifact = currentArtifact + meal.maxAmount()
-    ## TODO for swath, sumAmount clamped to 255
-    ## newArtifact = min(newArtifact, 255)
     self.pixmap.setPixelel(pixelelID, newArtifact)
     
     

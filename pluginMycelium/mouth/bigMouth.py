@@ -1,7 +1,7 @@
 '''
 '''
 
-from mouth import Mouth
+from .mouth import Mouth
 
 
 class BigMouth(Mouth):

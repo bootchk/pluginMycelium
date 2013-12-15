@@ -13,6 +13,11 @@ class Meal(object):
   - served (what can be eaten)
   - consumed (what was eaten)
   
+  A meal is a varying size list of portions.
+  It might be empty.
+  It might not include the channel of the automata that created it.
+  It might even include portions of zero amount.
+  
   TODO Optimization: subclass SingleChannelMeal with faster methods.
   '''
   

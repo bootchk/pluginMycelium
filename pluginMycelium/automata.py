@@ -10,10 +10,9 @@ from pixmap.pixelelID import PixelelID
 import config
 
 from direction import Direction
-from singlePixelMouth import SinglePixelMouth
-from wideMouth import WideMouth
-from deepMouth import DeepMouth
-
+from mouth.singlePixelMouth import SinglePixelMouth
+from mouth.wideMouth import WideMouth
+from mouth.deepMouth import DeepMouth
 
 
 
