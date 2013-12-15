@@ -26,6 +26,9 @@ class Mouth(object):
     '''
     Meal at mouth of automata (at current place.)
     Might be greater than mouth can clamp.
+    
+    Result meal may be empty of portions.  Any portions are non-zero amount.
+    I.E. does not ensure 'not meal.isEmpty()'
     '''
     raise NotImplementedError, "Deferred"
   

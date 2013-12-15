@@ -16,7 +16,8 @@ class Meal(object):
   A meal is a varying size list of portions.
   It might be empty.
   It might not include the channel of the automata that created it.
-  It might even include portions of zero amount.
+  
+  A meal does NOT include portions of zero amount.
   
   TODO Optimization: subclass SingleChannelMeal with faster methods.
   '''
@@ -26,6 +27,7 @@ class Meal(object):
     
     
   def append(self, portion):
+    assert portion.amount > 0, 'Portions should not be empty'
     self.portions.append(portion)
     
     
@@ -41,9 +43,12 @@ class Meal(object):
   
   def isEmpty(self):
     '''
-    Whether any portions have calories (not whether there are any portions.)
+    Whether there are any portions.
+    Since no portion may have zero amount, same as whether meal has any calories.
+    
+    !!! This does not guarantee there are calories in any particular pixelel of the meal.
     '''
-    return self.size() <= 0
+    return len(self.portions) <= 0
   
   
   def clamp(self):
@@ -92,7 +97,9 @@ class Meal(object):
   
   def amount(self):
     '''
-    !!! Require meal has a portion, i.e. for SinglePixelMouth
+    Optimization.
+    
+    !!! Requires meal has a single portion, i.e. for SinglePixelMouth
     '''
     return self.portions[0].amount
   
