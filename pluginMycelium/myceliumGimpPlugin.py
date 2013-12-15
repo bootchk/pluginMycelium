@@ -48,7 +48,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   Automata.setMouth(config.grain, food)
   
   # output images out
-  outputPixmap = createOutImagePixmap(image, drawable)
+  outputPixmap, outputImage = createOutImagePixmap(image, drawable)
   artifacts = Artifacts(outputPixmap) # wrap pixmap, consider it artifact
   
   frame=Frame( drawable.width, drawable.height )
@@ -60,6 +60,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   simulator.simulate()
   simulator.flush()
   
+  outputImage.enable_undo()
   #print("plugin done")
   
   '''
@@ -151,26 +152,23 @@ def createOutImagePixmap(image, drawable):
 
 
 def createGrayOutImagePixmap(drawable):
-  width = drawable.width
-  height = drawable.height
-  
-  outImage = gimp.Image(width, height, GRAY)  # <<< GRAY
-  outImage.disable_undo()
-  layer = gimp.Layer(outImage, "Mycelium", width, height, GRAY_IMAGE, 100, NORMAL_MODE) # <<< GRAY
-  outImage.add_layer(layer, 0)
-  return fillDisplayAndToPixmap(outImage, layer)
-
+  return createOutImagePixmapAndImage(drawable, mode=GRAY, layerMode=GRAY_IMAGE)
 
 def createColorOutImagePixmap(drawable):
+  return createOutImagePixmapAndImage(drawable, mode=RGB, layerMode=RGB_IMAGE)
+
+
+def createOutImagePixmapAndImage(drawable, mode=None, layerMode=None):
   width = drawable.width
   height = drawable.height
   
-  outImage = gimp.Image(width, height, RGB)
+  outImage = gimp.Image(width, height, mode)  # <<< mode
   outImage.disable_undo()
-  layer = gimp.Layer(outImage, "Mycelium", width, height, RGB_IMAGE, 100, NORMAL_MODE)
+  layer = gimp.Layer(outImage, "Mycelium", width, height, layerMode, 100, NORMAL_MODE) # <<< layerMode
   outImage.add_layer(layer, 0)
-  return fillDisplayAndToPixmap(outImage, layer)
-  
+  outPixmap = fillDisplayAndToPixmap(outImage, layer)
+  return outPixmap, outImage
+
   
 def fillDisplayAndToPixmap(outImage, layer):
   '''

@@ -27,6 +27,10 @@ class Food(object):
     '''
     mealAtMouth = automata.mouth.mealAt(automata)
     mealConsumed = mealAtMouth.clamp()
+    '''
+    Note we are eating even if deposit might deposit nothing: the tests of the meal might be different.
+    Should we have a test: isDepositable() ?
+    '''
     if not mealConsumed.isEmpty():
       automata.mouth.updateFoodAt(automata, mealAtMouth=mealAtMouth, mealConsumed=mealConsumed)
       self._eatenAmount += mealConsumed.size()

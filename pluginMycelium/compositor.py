@@ -211,6 +211,9 @@ class Compositor(object):
         self.pixelAddingCompose(automata, amount)
         
   
+  '''
+  TODO this is not correct for certain mouths.
+  '''
   def isOwned(self, pixelelID):
     ''' 
     Whether some channel (pixelelIndex) class of automata owns, and which channel class owns it.
