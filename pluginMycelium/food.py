@@ -26,7 +26,6 @@ class Food(object):
     Try to eat.  Return what did eat.
     '''
     mealAtMouth = automata.mouth.mealAt(automata)
-    #mealConsumed = automata.mouth.clamp(mealAtMouth)
     mealConsumed = mealAtMouth.clamp()
     if not mealConsumed.isEmpty():
       automata.mouth.updateFoodAt(automata, mealAtMouth=mealAtMouth, mealConsumed=mealConsumed)
@@ -36,6 +35,9 @@ class Food(object):
       
         
   def isAvailableAt(self, pixelelID):
+    '''
+    Is non-zero value at pixelelID (in channel at pixel.)
+    '''
     return self.at(pixelelID) > 0
   
   

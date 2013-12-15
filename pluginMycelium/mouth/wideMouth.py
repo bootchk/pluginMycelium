@@ -4,8 +4,8 @@
 from pixmap.pixelelID import PixelelID
 
 from .bigMouth import BigMouth
-from pluginMycelium.meal import Meal
-from pluginMycelium.portion import Portion
+from pluginMycelium.meal.meal import Meal
+from pluginMycelium.meal.portion import Portion
 
 
 

@@ -31,35 +31,26 @@ class Compositor(object):
     Dispatched on setting.
     '''
     if config.compose == 0:
-      ##return self.incrementSumCompose
-      return self.incrementPixelCompose
+      return self.addingCompose
     elif config.compose == 1:
-      return self.ownCompose
+      return self.funnelingCompose
     elif config.compose == 2:
       return self.maximizeCompose
+    elif config.compose == 3:
+      return self.owningCompose
+    elif config.compose == 4:
+      return self.pixelAddingCompose
     else:
-      return self.incrementPixelCompose # work in progress
+      return self.pixelOwningCompose
+    
+    
     
   '''
   Gradual compose, slowly build in value as automatas metabolize.
   '''
-  # NOT USED
-  def decrementCompose(self, automata, meal):
-    '''
-    Subtract: Gimp is a brightness 'value' where larger is whiter, subtract amount towards black.
-    '''
-    pixelelID = automata.pixelelID()
-    currentArtifact = self.pixmap.getPixelel(pixelelID)
-    newArtifact = currentArtifact - meal
-    if newArtifact < 0:
-      newArtifact = 0 # clamp
-    self.pixmap.setPixelel(pixelelID, newArtifact)
-    
-    ## ORIGINAL FOR HARDCODED CHANNEL
-    ## self.pixmap[position] = array('B', (newArtifact, ))
-    
-    
-  def incrementCompose(self, automata, meal):
+
+  # TODO this should not be max, but essential
+  def addingCompose(self, automata, meal):
     '''
     Increment a single pixelel (channel) by max channel from meal.
     
@@ -70,8 +61,8 @@ class Compositor(object):
     newArtifact = currentArtifact + meal.maxAmount()
     self.pixmap.setPixelel(pixelelID, newArtifact)
     
-    
-  def incrementSumCompose(self, automata, meal):
+  
+  def funnelingCompose(self, automata, meal):
     '''
     Increment a single pixelel (channel) by sum channels from meal.
     
@@ -85,14 +76,14 @@ class Compositor(object):
     self.pixmap.setPixelel(pixelelID, newArtifact)
     
     
-  def incrementPixelCompose(self, automata, meal):
+  def pixelAddingCompose(self, automata, meal):
     '''
     Increment all pixelels of artifacts by corresponding portions from meal.
     
     Automata are specialized to move on a channel.
     But here, they consume and deposit other channels of pixel of automata.
     
-    For grayscale and singlePixelMouth, this is equivalent to incrementCompose (since there are no other channels of pixel.)
+    For grayscale and singlePixelMouth, this is equivalent to addingCompose (since there are no other channels of pixel.)
     
     Note we already ate food, and this should not concern itself with food.
     '''
@@ -105,7 +96,13 @@ class Compositor(object):
       self.pixmap.setPixelel(channel, newArtifact)
 
   
+  '''
+  Abrupt compose, first to visit sets ultimate value as automatas metabolize.
+  Further visits still eat and may change environment,
+  so further visits have no effect on the pixelel, but are not redundant.
+  '''
   
+  # TODO is this called even if it did not eat in its channel??
   def maximizeCompose(self, automata, meal):
     '''
     Compose boolean: black 0 or white 255.
@@ -134,7 +131,23 @@ class Compositor(object):
       self.pixmap[pixelelID.coord]=array('B', (0,0,0))
     
       self.pixmap.setPixelel(pixelelID, newValue)
-  """
+  
+      
+  # NOT USED
+  def decrementCompose(self, automata, meal):
+    '''
+    Subtract: Gimp is a brightness 'value' where larger is whiter, subtract amount towards black.
+    '''
+    pixelelID = automata.pixelelID()
+    currentArtifact = self.pixmap.getPixelel(pixelelID)
+    newArtifact = currentArtifact - meal
+    if newArtifact < 0:
+      newArtifact = 0 # clamp
+    self.pixmap.setPixelel(pixelelID, newArtifact)
+    
+    ## ORIGINAL FOR HARDCODED CHANNEL
+    ## self.pixmap[position] = array('B', (newArtifact, ))
+  
     
   # NOT Used
   def firstCompose(self, automata, amount):
@@ -154,9 +167,9 @@ class Compositor(object):
     
     if first:
       self.pixmap.setPixelel(pixelelID, 255-amount)
-      
+  """   
   
-  def ownCompose(self, automata, amount):
+  def owningCompose(self, automata, amount):
     '''
     Only deposit if an automata of my channel class was first to visit this pixel,
     but increment pixelel value with meals from second visits.
@@ -169,14 +182,34 @@ class Compositor(object):
       No channel class owns it (I am first to visit.)
       Composing from it establishes ownership.
       '''
-      self.incrementCompose(automata, amount)
+      self.addingCompose(automata, amount)
     else:
       '''
       Some channel class of automata owns it.  If that channel matches my channel, compose.
       '''
       if visitedPixelelID == automata.pixelelIndex:
-        self.incrementCompose(automata, amount)
+        self.addingCompose(automata, amount)
+  
+  
+  def pixelOwningCompose(self, automata, amount):
+    '''
+    Only deposit if an automata of my channel class was first to visit this pixel.
+    '''
+    owned, visitedPixelelID = self.isOwned(automata.pixelelID())
     
+    if not owned:
+      '''
+      No channel class owns it (I am first to visit.)
+      Composing from it establishes ownership.
+      '''
+      self.pixelAddingCompose(automata, amount)
+    else:
+      '''
+      Some channel class of automata owns it.  If that channel matches my channel, compose.
+      '''
+      if visitedPixelelID == automata.pixelelIndex:
+        self.pixelAddingCompose(automata, amount)
+        
   
   def isOwned(self, pixelelID):
     ''' 

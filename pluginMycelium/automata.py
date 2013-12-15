@@ -60,9 +60,9 @@ class Automata(object):
       # Single pixel mouth gives fine grain
       Automata.mouth = SinglePixelMouth(food)
     elif grain == 1:
-      Automata.mouth = DeepMouth(food)
-    else:
       Automata.mouth = WideMouth(food)
+    else:
+      Automata.mouth = DeepMouth(food)
     
     
   def __init__(self, position, field, direction=None, reserves=None, channel=0):

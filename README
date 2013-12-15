@@ -20,9 +20,9 @@ Audience
 
 Artists who use Gimp.
 
-Programmers: as an example of object-oriented programming for simulation (the ancestral use of OOP as in Simula.)
+Programmers: an example of object-oriented programming for simulation (the ancestral use of OOP as in Simula.)
 
-Theorists: as a  visible example of worm automata.
+Theorists: an animated, graphical demonstration of worm automata.
 
 
 Specifications as a plugin
@@ -33,10 +33,24 @@ Generates a new image from any color or grayscale or indexed image.
 Ignores the selection and renders the entire input image.
 
 
+Artistic Effects
+----------------
+
+The effects can be extremely varied, depending on the parameters.
+
+Typical effects:
+
+Add grain.  Reduce the resolution of the image.  Similar to microbes eating the chemicals of a traditional photograph.
+
+Render artistically.  Similar to an artist manually scribbling with a drawing instrument.
+
+Tinting and colorization.
+
+
 References
 ----------
 
-Uses worm automata paradigm.
+Uses worm automata (automata that move.)
 
 See also:  http://en.wikipedia.org/wiki/Paterson%27s_worms
 
@@ -87,15 +101,15 @@ This plugin is not a single file (like many other plugins) but requires two othe
 Explanation
 -----------
 
-Myce are like mycelium or mice.  They consume from the input image and appear in the output image.  Considered as mycelium, they grow linearly, like threads.  Considered as mice, they move, leaving a trail of deposits.
+Myce are like mycelium or mice.  They consume from the input image and deposit to the output image.  Considered as mycelium, they appear to grow linearly, like threads.  Considered as mice, they move, leaving a trail of deposits.
 
-The tradition of 'worm automata' is misleading: all the action (feeding and depositing) is at a point, the head of the worm.  The result might look like a worm, but the automata are not shaped like a worm.  And the result might not be wormy or thready (when it runs a long time.)
+'Worm automata' is misleading: all the action (feeding and depositing) is at a point, the head of the worm.  The result might look like a worm, but the automata are not shaped like a worm.  And the result might not be wormy or thready (when it runs a long time.)
 
 Different myce instances may occupy the same pixel.
 
-Myce don't directly interact with each other (except indirectly via their effect on the environment.)
+Myce don't directly interact with each other (but indirectly via their effect on the environment.)
 
-Myce might wander off the field.
+Myce might wander off the field (but then they die or migrate back onto the field.)
 
 Myce are specialized to a channel (a pixelel of a pixel.)  I.E. to a kind of resource.
 
@@ -103,28 +117,46 @@ Myce have a reserve of eaten food minus requirement.
 
 Myce can divide if their reserves are large enough.
 
-Myce with no reserves and not eating might migrate.  Migrate means randomly jump to another pixel at a middle distance.
+Myce with no reserves and not eating might migrate.  Migrate means randomly jump to another pixel at a middle distance (or further, to a uniformly random position, to keep the migration on the field.)
 
 Myce only deposit if they eat.  Thus their trail might have gaps (if they move while living off their reserves, or if they migrate.)
 
+Myce need not deposit everything they eat.
 
 
 Parameters
 ----------
 
-Starting field: how the simulation is initialized.  Uniform: a population (the max) is uniformly random distributed.  Center: a small population starts in the center.
+There are a bewildering many combinations of parameters, and many combinations have similar effects.  For example, if 'Mode to gray':Yes, then 'Feed':'Deep, pixel's pixelels' is equivalent to 'Feed':'Small, one pixelel'.
+
+Unfortunately, the GUI does not disable choices that become irrelevant by other choices.  And this discussion points out some, but not all combinations that are equivalent.  But all combinations should work; you need not worry that some combinations will cause an exception, they simply might not produce a novel effect from other combinations.
+
+
+Parameters about the simulation
+-------------------------------
+
+
+Starting field: how the simulation is initially populated.  Uniform: a population (the max) is uniformly random distributed.  Center: a small population starts in the center.
 
 Max population: upper limit on the population of automata.
 
 Ending percent: one factor determining when the simulation ends.  The percent of food consumed.  The simulation also ends if many simulation periods elapse with no food consumed, e.g. if all the myce have died.
 
-Mode to gray: whether the output is grayscale.  Input may be color, grayscale, or indexed.  Output may be either color or grayscale.  If 'Mode to gray' is 'No', each myce is specialized to a channel (R, G, or B.)  If 'Mode to gray' is 'Yes',  all myce are in one channel.
+Mode to gray: whether the output is grayscale.  Input may be color, grayscale, or indexed.  Output may be either color or grayscale.  If 'Mode to gray' is 'No', each myce is specialized to a channel (R, G, or B.)  If 'Mode to gray' is 'Yes',  all myce are in one channel (gray.)
 
-Myce squirm: the direction a myce moves.  Relaxed: mostly forward. ....  Plodding: mostly forward but also straight back.
 
-Myce greedy: whether a myce moves to a pixel with more food or randomly chooses from pixels in it's squirm range.
+Parameters about the myce
+-------------------------
 
-Myce exhausted: what happens when a myce has no reserves and finds no food.
+Myce squirm: the direction a myce moves:
+- Relaxed: mostly forward: slightly left or right or straight ahead.
+- Curly: slightly left or right ahead, but never straight ahead.
+- Kinky: relaxed or hard left or right
+- Plodding: relaxed or straight back.
+
+Myce are greedy: whether a myce moves to a pixel with more food or randomly chooses from pixels in it's squirm range.
+
+Myce, when exhausted: what happens when a myce has no reserves and finds no food.
 
 Myce max daily intake: how much food a myce attempts to eat.
 
@@ -132,9 +164,37 @@ Myce daily burn: how much food or reserves are consumed each period.
 
 Myce divide on reserves of: how much reserves cause a myce to divide (splitting its reserves with it's twin.)
 
-Compose: how what a myce deposits is composed with what has been deposited earlier (by itself, or by other myce.)
+Feed: how a myce consumes values of pixelels around its location.  See below.
 
-Grain: the graininess or granularity of the effect.  If 'Coarse', a myce eats a swath of pixelelels (of the same channel) from a neighborhood of pixels, instead of just one pixelel, and deposits to one pixelel.  If 'Greedy' is also chosen, this tends to keep myce separated and non-crossing.  In other words, myce may have a wide-mouth.
+Deposit: how a myce deposits: how a meal (what it fed upon) is composed with what was deposited earlier (by itself, or by other myce.)  See below.
+
+
+Feed choices
+------------
+
+Feed choice is similar to 'mouth shape.'  Feed choices affect the graininess or granularity, but can have other effects, when combined with deposit choices.
+
+Small, one pixelel: a myce eats one pixelel at its location, in its channel (remember, a myce is specialized to a channel.)  Least grain.
+
+Wide, channel swath: a myce eats a swath of pixelelels (of the same channel) from a neighborhood of pixels, instead of just one pixelel.  If 'Greedy' is also chosen, this tends to keep myce separated and non-crossing.
+
+Deep, pixel's pixelels: a myce eats all channels of the pixel at its location.  A myce still is specialized to one channel, but in this case it only affects how it moves and deposits.  For example, a greedy myce might move towards red, but eat RGB, and deposit only red.  Same as Small if 'Mode to gray' is Yes.
+
+
+Deposit choices
+---------------
+
+Pixelel adding: whatever it ate in its channel (at the pixelel at its location), add to the pixelel in the output image.  Whatever it ate in other channels or pixelels is lost.
+
+Channel funneling: whatever it ate in all pixelels (not necessarily the same channel), add to the pixelel at the myce's location and channel.  Excess deposits ( > 255) are lost.  With a Deep mouth, this moves values between channels.  With a Wide mouth, this moves values between pixels.
+
+Channel maxing: if anything was eaten in its channel, set its pixelel to the maximum.  The amount eaten is irrelevant to the deposit, but does affect whether any automata might visit in the future.  Other automata might still visit a pixel and max out their channel also (tend the pixel towards white.)
+
+Channel owning: the first automata to visit a pixel establishes ownership by the class of automata having the same channel.  (If a red automata visits first, the pixel will be a shade of red.)  If owned, deposit the same as in 'Pixelel adding', i.e. additive.  if 'Mode to gray' is Yes, the same as 'Pixelel adding.'
+
+All pixelels adding: whatever it ate from whatever pixelels of whatever pixels, add to the corresponding output pixelels.  If Small mouth, this is same as 'Pixelel adding.'
+
+All pixelels owning: the first automata to visit a pixel establishes ownership by the class of automata having the same channel.  If owned, deposit the same as 'All pixelels adding.'  This may deposit to pixels not owned, when mouth is Wide.  Similarly, when mouth is Wide, automata specialized to other channels (not owning this pixel) can deposit to their channel of this pixel.
 
 
 Inverting

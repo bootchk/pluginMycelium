@@ -2,7 +2,8 @@
 '''
 from copy import deepcopy
 
-import config
+import pluginMycelium.config as config
+
 
 
 class Meal(object):

@@ -43,8 +43,16 @@ register(
           (PF_SLIDER, "mealCalories", "Myce max daily intake:", 26, (1, 255, 10)),
           (PF_SLIDER, "burnCalories", "Myce daily burn:", 24, (1, 255, 10)),
           (PF_SLIDER, "reservesToDivide", "Myce divide on reserves of:", 13, (1, 255, 10)),
-          (PF_OPTION, "compose", "Compose:", 0, ["Additive", "Ownership", "Maximize"]),
-          (PF_OPTION, "grain", "Grain:", 0, ["Fine", "Coarse"])
+          (PF_OPTION, "compose", "Deposit:", 0, ['Pixelel adding', 
+                                                 'Channel funneling', 
+                                                 'Channel maxing', 
+                                                 'Channel owning',
+                                                 'All pixelels adding',
+                                                 'All pixelels owning']),
+          (PF_OPTION, "grain", "Feed:", 0, ['Small, one pixelel',
+                                            'Wide, channel swath',
+                                            "Deep, pixel's pixelels",
+                                            ])
         ],
         [],
         pluginMain)

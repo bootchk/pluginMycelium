@@ -1,8 +1,8 @@
 '''
 '''
 from .mouth import Mouth
-from pluginMycelium.meal import Meal
-from pluginMycelium.portion import Portion
+from pluginMycelium.meal.meal import Meal
+from pluginMycelium.meal.portion import Portion
 
 
 
