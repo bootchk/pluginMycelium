@@ -48,10 +48,10 @@ class Compositor(object):
     
     
   '''
-  Gradual compose, slowly build in value as automatas metabolize.
+  Gradual compose, slowly build in value as automata metabolize.
   '''
 
-  # TODO this should not be max, but essential
+  # TODO this should not be max, but essential: amount from same channel
   def addingCompose(self, automata, meal):
     '''
     Increment a single pixelel (channel) by max channel from meal.
@@ -114,10 +114,35 @@ class Compositor(object):
     meal not used.  Assert not meal.isEmpty()? But this might be a way to implement slime.
     '''
     self.pixmap.setPixelel(automata.pixelelID(), 255)
-    
-    ## ORIGINAL FOR HARDCODED CHANNEL
-    ## self.pixmap[pixelelID] = array('B', (0, ))
   
+
+  
+  def owningCompose(self, automata, meal):
+    '''
+    Only deposit if an automata of my channel class was first to visit this pixel,
+    but increment pixelel value with meals from second visits.
+    I.E. once a pixel is first visited by an automata, all automata having the same channel can deposit.
+    '''
+    self.composeIfOwned(automata, meal, self.addingCompose)
+    
+    
+  def pixelOwningCompose(self, automata, meal):
+    self.composeIfOwned(automata, meal, self.pixelAddingCompose)
+    
+    
+  def composeIfOwned(self, automata, meal, composeMethod):
+    owned, ownedBySelf = ownership.isOwned(automata.pixelelID())
+    
+    if not owned:
+      # No channel class owns it (I am first to visit.)
+      ownership.possess(automata.pixelelID())
+      composeMethod(automata, meal)
+    else:
+      if ownedBySelf:
+        # My channel class of automata already own it.
+        composeMethod(automata, meal)
+
+        
   
   """
   # NOT Used
@@ -170,34 +195,6 @@ class Compositor(object):
     if first:
       self.pixmap.setPixelel(pixelelID, 255-amount)
   """   
-  
-  def owningCompose(self, automata, meal):
-    '''
-    Only deposit if an automata of my channel class was first to visit this pixel,
-    but increment pixelel value with meals from second visits.
-    I.E. once a pixel is first visited by an automata, all automata having the same channel can deposit.
-    '''
-    self.composeIfOwned(automata, meal, self.addingCompose)
-    
-    
-  def pixelOwningCompose(self, automata, meal):
-    self.composeIfOwned(automata, meal, self.pixelAddingCompose)
-    
-    
-  def composeIfOwned(self, automata, meal, composeMethod):
-    owned, ownedBySelf = ownership.isOwned(automata.pixelelID())
-    
-    if not owned:
-      # No channel class owns it (I am first to visit.)
-      ownership.possess(automata.pixelelID())
-      composeMethod(automata, meal)
-    else:
-      if ownedBySelf:
-        # My channel class of automata already own it.
-        composeMethod(automata, meal)
-
-        
-  
   
   
   
