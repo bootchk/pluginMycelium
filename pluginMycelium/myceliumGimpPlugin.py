@@ -14,6 +14,8 @@ from food import Food
 from artifacts import Artifacts
 from field import Field
 from direction import Direction
+from ownership import ownership
+
 import config
 
 
@@ -50,6 +52,9 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   # output images out
   outputPixmap, outputImage = createOutImagePixmap(image, drawable)
   artifacts = Artifacts(outputPixmap) # wrap pixmap, consider it artifact
+  
+  # ownership pixmap mask
+  ownership.create(outputPixmap)
   
   frame=Frame( drawable.width, drawable.height )
   

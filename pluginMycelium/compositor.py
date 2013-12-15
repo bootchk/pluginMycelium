@@ -3,6 +3,8 @@
 
 import config
 
+from ownership import ownership
+
 
 class Compositor(object):
   '''
@@ -169,73 +171,34 @@ class Compositor(object):
       self.pixmap.setPixelel(pixelelID, 255-amount)
   """   
   
-  def owningCompose(self, automata, amount):
+  def owningCompose(self, automata, meal):
     '''
     Only deposit if an automata of my channel class was first to visit this pixel,
     but increment pixelel value with meals from second visits.
     I.E. once a pixel is first visited by an automata, all automata having the same channel can deposit.
     '''
-    owned, visitedPixelelID = self.isOwned(automata.pixelelID())
+    self.composeIfOwned(automata, meal, self.addingCompose)
+    
+    
+  def pixelOwningCompose(self, automata, meal):
+    self.composeIfOwned(automata, meal, self.pixelAddingCompose)
+    
+    
+  def composeIfOwned(self, automata, meal, composeMethod):
+    owned, ownedBySelf = ownership.isOwned(automata.pixelelID())
     
     if not owned:
-      '''
-      No channel class owns it (I am first to visit.)
-      Composing from it establishes ownership.
-      '''
-      self.addingCompose(automata, amount)
+      # No channel class owns it (I am first to visit.)
+      ownership.possess(automata.pixelelID())
+      composeMethod(automata, meal)
     else:
-      '''
-      Some channel class of automata owns it.  If that channel matches my channel, compose.
-      '''
-      if visitedPixelelID == automata.pixelelIndex:
-        self.addingCompose(automata, amount)
-  
-  
-  def pixelOwningCompose(self, automata, amount):
-    '''
-    Only deposit if an automata of my channel class was first to visit this pixel.
-    '''
-    owned, visitedPixelelID = self.isOwned(automata.pixelelID())
-    
-    if not owned:
-      '''
-      No channel class owns it (I am first to visit.)
-      Composing from it establishes ownership.
-      '''
-      self.pixelAddingCompose(automata, amount)
-    else:
-      '''
-      Some channel class of automata owns it.  If that channel matches my channel, compose.
-      '''
-      if visitedPixelelID == automata.pixelelIndex:
-        self.pixelAddingCompose(automata, amount)
+      if ownedBySelf:
+        # My channel class of automata already own it.
+        composeMethod(automata, meal)
+
         
   
-  '''
-  TODO this is not correct for certain mouths.
-  '''
-  def isOwned(self, pixelelID):
-    ''' 
-    Whether some channel (pixelelIndex) class of automata owns, and which channel class owns it.
-    Is pixel owned by class of automata of certain channel? 
-    '''
-    
-    # assert pixelels were all initialized to 0 (black)
-    # WAS 255 (white)
-    pixel = self.pixmap[pixelelID.coord]
-    
-    owned = False
-    pixelelIndex = 0
-    for pixelel in pixel:
-      if pixelel > 0:  # WAS < 255:
-        owned = True
-        break
-      pixelelIndex += 1
-      
-    # Logically, 'x implies y' is equivalent to '(not x) or y'
-    # Thus 'owned implies pixelelIndex<pixmap.bpp' is equivalent to as follows:
-    assert (not owned) or pixelelIndex < self.pixmap.bpp
-    return owned, pixelelIndex
+  
   
   
   
