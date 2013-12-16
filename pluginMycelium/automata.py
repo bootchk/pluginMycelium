@@ -287,7 +287,7 @@ class Automata(object):
   # Alternative 2
   def _poopMealIfAte(self, meal):
     # Don't deposit if meal.isEmpty() since some compose methods might ignore meal e.g. maximize
-    if not meal.isEmpty():
+    if not meal.isEssentiallyEmpty():
       self.field.artifacts.depositAt(self, meal=meal) # OLD self.pixelelID(), amount=meal)
   
   

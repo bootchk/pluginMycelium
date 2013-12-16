@@ -51,7 +51,7 @@ class Compositor(object):
   Gradual compose, slowly build in value as automata metabolize.
   '''
 
-  # TODO this should not be max, but essential: amount from same channel
+  
   def addingCompose(self, automata, meal):
     '''
     Increment a single pixelel (channel) by max channel from meal.
@@ -60,7 +60,9 @@ class Compositor(object):
     '''
     pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
-    newArtifact = currentArtifact + meal.maxAmount()
+    # This is essential: amount from same pixelel
+    # Even if mouth is wide, only deposit portion under automata
+    newArtifact = currentArtifact + meal.essentialAmount
     self.pixmap.setPixelel(pixelelID, newArtifact)
     
   

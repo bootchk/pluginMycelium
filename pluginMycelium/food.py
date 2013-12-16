@@ -31,7 +31,7 @@ class Food(object):
     Note we are eating even if deposit might deposit nothing: the tests of the meal might be different.
     Should we have a test: isDepositable() ?
     '''
-    if not mealConsumed.isEmpty():
+    if not mealConsumed.isEssentiallyEmpty():
       automata.mouth.updateFoodAt(automata, mealAtMouth=mealAtMouth, mealConsumed=mealConsumed)
       self._eatenAmount += mealConsumed.size()
       ##print("Ate", result, " at ", pixelelID)

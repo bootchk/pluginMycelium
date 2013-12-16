@@ -14,22 +14,28 @@ class Meal(object):
   - served (what can be eaten)
   - consumed (what was eaten)
   
-  A meal is a varying size list of portions.
+  A meal is a varying len list of portions.
   It might be empty.
-  It might not include the channel of the automata that created it.
+  It might not include portion on channel of automata that created it.
   
   A meal does NOT include portions of zero amount.
   
   TODO Optimization: subclass SingleChannelMeal with faster methods.
   '''
   
-  def __init__(self):
+  def __init__(self, essentialPixelelID):
     self.portions = []
+    self.essentialPixelelID = essentialPixelelID  # location of automata is eating
+    self.essentialAmount = 0 # how much of essential channel was eaten
     
     
   def append(self, portion):
     assert portion.amount > 0, 'Portions should not be empty'
     self.portions.append(portion)
+    
+    # Remember if portion on essential pixelel is appended
+    if portion.pixelelID == self.essentialPixelelID:
+      self.essentialAmount = portion.amount
     
     
   def size(self):
@@ -51,12 +57,18 @@ class Meal(object):
     '''
     return len(self.portions) <= 0
   
+  def isEssentiallyEmpty(self):
+    ''' Whether meal ate the essential channel. '''
+    return self.essentialAmount == 0
+  
   
   def clamp(self):
     '''
+    Change state of meal from served to consumed.
     Meal consumed, in range [0, mouth_size]
     I can only eat so much, and no more than is available.
     
+    Might better be called chomp (or limit high).
     Responsibility:
     - know size of mouth (how much food it will hold)
     
@@ -75,11 +87,13 @@ class Meal(object):
   
   def _clampPortions(self):
     '''
-    Copy of self with all portions clamped.
+    Copy of self with all portions AND essentialAmount clamped.
     '''
     result = deepcopy(self)
     for portion in result.portions:
       portion.amount = min(portion.amount, config.mealCalories)
+      
+    result.essentialAmount = min(result.essentialAmount, config.mealCalories)
     return result
   
   # TODO resolve portionCalories versus mealCalories
@@ -87,7 +101,10 @@ class Meal(object):
   
   def maxAmount(self):
     '''
-    Max amount of meal in any single portion (channel).
+    Max amount of meal in any single portion.
+    Portions may be in different channels.
+    Caller should not assume result is in any particular channel
+    (or that it will add to any channel without overflow.)
     '''
     result = 0
     for portion in self.portions:

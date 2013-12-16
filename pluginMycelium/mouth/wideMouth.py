@@ -32,10 +32,10 @@ class WideMouth(BigMouth):
     swathCoords = automata.direction.swathCoords()
     for coord in swathCoords:
       wildPosition = automata.position + coord  # !!! wild, is unclipped
-      if self.food.pixmap.isClipped(wildPosition):
-        continue
-      patch.append(PixelelID(wildPosition, automata.pixelelIndex))
+      if not self.food.pixmap.isClipped(wildPosition):
+        patch.append(PixelelID(wildPosition, automata.pixelelIndex))
     # patch might be empty
+    # Every PixelelID in patch has same PixelelIndex (channel)
     return patch
       
     
@@ -45,7 +45,7 @@ class WideMouth(BigMouth):
     '''
     self.patch = self._makePatch(automata)
     
-    meal = Meal()
+    meal = Meal(essentialPixelelID=automata.pixelelID())
     for pixelelID in self.patch:
       foodAt = self.food.at(pixelelID)
       if foodAt > 0:

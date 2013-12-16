@@ -15,7 +15,7 @@ class SinglePixelMouth(Mouth):
   
   def mealAt(self, automata):
     ''' Effect deferred method. '''
-    meal = Meal()
+    meal = Meal(essentialPixelelID=automata.pixelelID())
     pixelelID = automata.pixelelID()
     amount = self.food.at(pixelelID)
     if amount > 0:

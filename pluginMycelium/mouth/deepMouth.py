@@ -23,7 +23,7 @@ class DeepMouth(BigMouth):
     '''
     Effect deferred method.
     '''
-    meal = Meal()
+    meal = Meal(essentialPixelelID=automata.pixelelID())
     for pixelelID in self.food.pixmap.pixelelIDsAt(automata.position):
       foodAt = self.food.at(pixelelID)
       if foodAt > 0:
