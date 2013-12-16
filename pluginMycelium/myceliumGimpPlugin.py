@@ -46,7 +46,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   inputPixmap = createInputPixmap(image)
   food = Food(inputPixmap) # wrap pixmap, consider it food
   
-  # After config is set, specialize Automata class with user's choice of grain (mouth size)
+  # After config is set, specialize Automata class with user's choice of mouth
   Automata.setMouth(config.grain, food)
   
   # output images out

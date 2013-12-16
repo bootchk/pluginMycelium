@@ -31,7 +31,7 @@ class DeepMouth(BigMouth):
         meal.append(portion)
     # meal may be empty of portions.  All portions are non-zero amount
     '''
-    meal.size() may be greater than 255 i.e. max pixelel value defined by graphics framework.
+    meal.calories() may be greater than 255 i.e. max pixelel value defined by graphics framework.
     assert that the caller will clamp it to 255 ???
     '''
     return meal

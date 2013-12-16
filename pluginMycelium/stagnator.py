@@ -34,7 +34,8 @@ class Stagnator(object):
       else:
         self.countStagnantPeriods = 0 # reset count
         result = False
-        
+    
+    #print "isStagnant", self.previousValue, newValue
     self.previousValue = newValue  # Always roll
     assert result == True or result == False
     return result

@@ -20,7 +20,7 @@ class Mouth(object):
   
   '''
   Responsibility:
-  - know the extent of mouth (how much food it reaches.)  Not the same as size.
+  - know the extent of mouth (how much food it reaches.)  Not the same as calories.
   '''
   def mealAt(self, automata):
     '''
@@ -33,13 +33,11 @@ class Mouth(object):
     raise NotImplementedError, "Deferred"
   
   
-  def updateFoodAt(self, automata, mealAtMouth, mealConsumed):
+  def updateFoodAt(self, automata, mealConsumed):
     '''
     Consume food.
     Mouth knows the range of pixels it is consuming from.
     mealConsumed also knows what pixelels are involved.
-    
-    mealAtMouth is a cached value of the food at the automata.
     '''
     raise NotImplementedError, "Deferred"
   

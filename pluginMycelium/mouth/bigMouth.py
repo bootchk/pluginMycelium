@@ -12,29 +12,23 @@ class BigMouth(Mouth):
   '''
 
   
-  def updateFoodAt(self, automata, mealAtMouth, mealConsumed):  # mealAtMouth is not used.
+  def updateFoodAt(self, automata, mealConsumed):
     '''
     Effect deferred method.
     
-    Assert mealConsumed is already clamped to mealAtMouth.
-    Assert mealConsumed and mealAtMouth have portions in the same order by PixelelID.
-    '''
-    '''
-    TODO this is a concern of artifacts.
-    Since we are also depositing it, and can't deposit more than 255 in one pixelel.
-    This might change, if we deposit at more than one pixelel.
-    '''
-    #assert mealConsumed.size() <= 255
+    Note automata not used: using PixelelID from portions.
     
-    # TODO iterator function
-    # Iterate over mealConsumed (same as iterating over patch.)
-    # assert meal has no empty portions
+    It is not a concern here whether mealConsumed.calories() <= 255.
+    Assert for portion in meal: 0 < portion <= 255
+    '''
+    
+    # Not the same as iterating over patch, since some of patch might not have a portion
     for portion in mealConsumed.portions:
       pixelelID = portion.pixelelID
-      # We could also get foodAt from corresponding portion of mealAtMouth
-      foodAt = self.food.pixmap.getPixelel(pixelelID)
-      # assert 0 < foodAt <= 255
+      foodAt = self.food.at(pixelelID)
+      # assert 0 <= foodAt <= 255
       remainingFood = foodAt - portion.amount
+      # Writing to unsigned char, it will raise exception if math wrong, i.e. remainingFood < 0.
       self.food.set(pixelelID, remainingFood)
 
   

@@ -37,10 +37,3 @@ mealCalories = 0  # how much an automata may eat per period
 burnCalories = 0  # how much an automata metabolizes (from meal and reserves) each period
 reservesToDivide = 0  # how much reserves are required to divide
 
-'''
-OLD names for these parameters
-
-GUT_SIZE = 26  # 76
-HEALTH_DAILY_METABOLISM = 24  # 75
-HEALTH_TO_PROCREATE = 13  # 38
-'''

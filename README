@@ -197,10 +197,21 @@ All pixelels adding: whatever it ate from whatever pixelels of whatever pixels, 
 All pixelels owning: the first automata to visit a pixel establishes ownership by the class of automata having the same channel.  If owned, deposit the same as 'All pixelels adding.'  This may deposit to pixels not owned, when mouth is Wide.  Similarly, when mouth is Wide, automata specialized to other channels (not owning this pixel) can deposit to their channel of this pixel.
 
 
+Secondary effects
+-----------------
+
+When myce are greedy and their squirminess is biased toward forward movement, they tend towards brighter areas of the image.  This might leave dark regions in the result.  You can partially counteract this effect with a larger population.
+
+When myce migrate rather than die when exhausted, it seems to result in a fringe around the image (since they often migrate back into the middle of the image.)  Again, you can counteract with a larger population.  Or you can synthesize a band around the image before you start, and crop a band afterwords.
+
+
+
 Inverting
 ---------
 
-Myce currently deposit RGB or GRAY pixelel values on a black background.  The plugin has no 'Invert' parameter, but you can invert an image, run the plugin, and invert the results, for a different effect.  (I'm still exploring whether an 'Invert' parameter and a subtractive compose mode would offer novel effects.)
+Myce currently deposit RGB or GRAY pixelel values on a black background.  The plugin has no 'Invert' parameter, but you can invert an image, run the plugin, and invert the results, for a different effect.  
+
+(I'm still exploring whether an 'Invert' parameter and a subtractive compose mode would offer novel effects.  For example: Mycelium to 80% complete does not give the same result as Invert, Mycelium to 20%, Invert.)
 
 TODO
 ----

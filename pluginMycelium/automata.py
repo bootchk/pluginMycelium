@@ -1,5 +1,4 @@
 '''
-
 '''
 import random
 from copy import copy
@@ -13,8 +12,6 @@ from direction import Direction
 from mouth.singlePixelMouth import SinglePixelMouth
 from mouth.wideMouth import WideMouth
 from mouth.deepMouth import DeepMouth
-
-
 
 
 
@@ -100,15 +97,15 @@ class Automata(object):
     !!! It is not invariant that current position is on the field.
     '''
     # eat and poop at current position, if it is on the field !!!
-    meal = self.metabolize() 
-    self.tryPoop(meal)
+    mealConsumed = self.metabolize() 
+    self.tryPoop(mealConsumed)
     
     # Change direction just before move, otherwise other automata may swoop in and eat what I am greedily changing direction toward
     self.changeDirection()
     self.move()
     
     self.tryDivide()
-    self.tryExhaustion(meal)
+    self.tryExhaustion(mealConsumed)
     
     
     
@@ -126,15 +123,15 @@ class Automata(object):
 
   def metabolize(self):
     '''
-    Try to eat.  Return size of meal eaten.
+    Try to eat.  Return mealConsumed.
     Adjust reserves.
     '''
-    meal = self.field.food.eat(automata=self)
-    # A meal larger than metabolic rate increases reserves.
-    self._reserves +=  meal.size() - config.burnCalories
+    mealConsumed = self.field.food.eat(automata=self)
+    # A mealConsumed larger than metabolic rate increases reserves.
+    self._reserves +=  mealConsumed.calories() - config.burnCalories
     if self._reserves <= 0:
       self.setStarved()
-    return meal
+    return mealConsumed
     
     
   def move(self):
@@ -233,13 +230,13 @@ class Automata(object):
     self.field.append(newAutomata)
   
     
-  def tryExhaustion(self, meal):
+  def tryExhaustion(self, mealConsumed):
     '''
     Test whether exhausted: starved and did not eat.
     
     Alternative: migrate if starved regardless whether we ate.
     '''
-    if self.isStarved() and meal.isEmpty():
+    if self.isStarved() and mealConsumed.isEmpty():
       if config.exhaustion == 0:
         '''
         Perish: remove myself from population.
@@ -251,44 +248,50 @@ class Automata(object):
         self.migrate()
       
       
-  def tryPoop(self, meal):
+  def tryPoop(self, mealConsumed):
     ''' 
     Artifact of metabolism i.e. eating.
     
-    Self need not be exhausted (might have reserves).  But might not have just eaten (meal might be 0.)
+    Self need not be exhausted (might have reserves).  But might not have just eaten (mealConsumed might be 0.)
     Self may have reserves but in some designs, might be wandered off field.
     
     Whether current position has food, is on the field, etc. depends on the order in which sub-behaviours are called.
     
-    TODO meal is what I consumed this period, not what is in my gut from last period.
+    TODO mealConsumed is what I consumed this period, not what is in my gut from last period.
     '''
     # if self.isEating():
     
     '''
     Note we may have just eaten, but could still be starved, if we did not eat enough to equal our daily metabolism.
     '''
-    ##self._poopMealIfNotStarved(meal)
-    self._poopMealIfAte(meal)
+    ##self._poopMealIfNotStarved(mealConsumed)
+    self._poopMealIfAte(mealConsumed)
     
     
   # Alternative 1
-  def _poopMealIfNotStarved(self, meal):
+  def _poopMealIfNotStarved(self, mealConsumed):
     '''
-    Poop meal if not starved.
+    Poop mealConsumed if not starved.
     Not true to life as we know it:
-    - should poop yesterday's meal.
+    - should poop yesterday's mealConsumed.
     - should poop if gut is not empty, regardless of starving state
     '''
     if not self.isStarved():
       # !!! Cannot assert: not isClipped(self.position)
-      self.field.artifacts.depositAt(self, amount=meal) # OLD self.pixelelID(), amount=meal)
+      self.field.artifacts.depositAt(self, amount=mealConsumed)
       
       
   # Alternative 2
-  def _poopMealIfAte(self, meal):
-    # Don't deposit if meal.isEmpty() since some compose methods might ignore meal e.g. maximize
-    if not meal.isEssentiallyEmpty():
-      self.field.artifacts.depositAt(self, meal=meal) # OLD self.pixelelID(), amount=meal)
+  def _poopMealIfAte(self, mealConsumed):
+    '''
+    Deposit mealConsumed if it has portions in my channel at my position.
+    (That's what not isEssentiallyEmpty() means.)
+    Some mouths make non-empty meals that don't have a portion in my channel at my position.
+    
+    Don't deposit if mealConsumed.isEssentiallyEmpty() since some compose methods might ignore amount of mealConsumed e.g. maximize
+    '''
+    if not mealConsumed.isEssentiallyEmpty():
+      self.field.artifacts.depositAt(self, meal=mealConsumed)
   
   
     

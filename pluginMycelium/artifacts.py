@@ -24,7 +24,7 @@ class Artifacts(Compositor, object):
     
   def depositAt(self, automata, meal):
     '''
-    Deposit pixelel value at pixelelID using compose method.
+    Compose meal into output image.
     
     In this design, an automata may wander off the field.
     Note an automata off the field can't stay non-exhausted very long since there is no food: reserves will deplete.
@@ -32,14 +32,14 @@ class Artifacts(Compositor, object):
     Whether the meal is from this period (pixel) or a previous period depends on the caller, not a concern here.
     '''
     # not assert meal > 0
-    if not self.pixmap.isClipped(automata.position):  # OLD pixelelID.coord):
+    if not self.pixmap.isClipped(automata.position):
       self.compose(automata, meal)
     else:
       '''
       !!! A deposit off the field dissappears from view, but is not a RuntimeError
       raise RuntimeError, "Wandered off field, should not be metabolizing"
       '''
-      if meal.size() > 0:
+      if meal.calories() > 0:
         '''
         For now, this should never happen (it might as well be an assertion) but for future use, allow this.
         

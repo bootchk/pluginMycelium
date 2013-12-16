@@ -75,7 +75,7 @@ class Compositor(object):
     '''
     pixelelID = automata.pixelelID()
     currentArtifact = self.pixmap.getPixelel(pixelelID)
-    newArtifact = currentArtifact + meal.size() # totalCalories
+    newArtifact = currentArtifact + meal.calories()
     newArtifact = min(newArtifact, 255)
     self.pixmap.setPixelel(pixelelID, newArtifact)
     

@@ -13,10 +13,12 @@ class SinglePixelMouth(Mouth):
   All meals have a single portion.
   '''
   
+  
   def mealAt(self, automata):
     ''' Effect deferred method. '''
-    meal = Meal(essentialPixelelID=automata.pixelelID())
+    
     pixelelID = automata.pixelelID()
+    meal = Meal(essentialPixelelID=pixelelID)
     amount = self.food.at(pixelelID)
     if amount > 0:
       portion = Portion(pixelelID, amount)
@@ -26,17 +28,14 @@ class SinglePixelMouth(Mouth):
     return meal
 
   
-  def updateFoodAt(self, automata, mealAtMouth, mealConsumed):
+  def updateFoodAt(self, automata, mealConsumed):
     '''
     Effect deferred method.
     
     !!! Optimize: assert meal has exactly one portion
     '''
-    remainingFood = mealAtMouth.amount() - mealConsumed.amount()
-    
-    ## Original code to assign whole pixel of one pixelel
-    ## self.pixmap[pixelelID.coord] =  array('B', (remainingFood, ))
-    
-    self.food.set(automata.pixelelID(), remainingFood)
+    pixelelID = automata.pixelelID()
+    remainingFood = self.food.at(pixelelID) - mealConsumed.singlePortionAmount()
+    self.food.set(pixelelID, remainingFood)
     
     

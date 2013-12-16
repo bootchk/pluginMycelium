@@ -23,19 +23,22 @@ class Food(object):
 
   def eat(self, automata):
     '''
-    Try to eat.  Return what did eat.
+    Try to eat.  Return meal consumed.
     '''
-    mealAtMouth = automata.mouth.mealAt(automata)
-    mealConsumed = mealAtMouth.clamp()
+    meal = automata.mouth.mealAt(automata)
+    # meal is what is available
+    meal.clamp()
+    # meal is what should be consumed
+    
     '''
     Note we are eating even if deposit might deposit nothing: the tests of the meal might be different.
     Should we have a test: isDepositable() ?
     '''
-    if not mealConsumed.isEssentiallyEmpty():
-      automata.mouth.updateFoodAt(automata, mealAtMouth=mealAtMouth, mealConsumed=mealConsumed)
-      self._eatenAmount += mealConsumed.size()
+    if not meal.isEssentiallyEmpty():
+      automata.mouth.updateFoodAt(automata, mealConsumed=meal)
+      self._eatenAmount += meal.calories()
       ##print("Ate", result, " at ", pixelelID)
-    return mealConsumed
+    return meal
       
         
   def isAvailableAt(self, pixelelID):

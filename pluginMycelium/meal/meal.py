@@ -1,7 +1,5 @@
 '''
 '''
-from copy import deepcopy
-
 import pluginMycelium.config as config
 
 
@@ -38,7 +36,7 @@ class Meal(object):
       self.essentialAmount = portion.amount
     
     
-  def size(self):
+  def calories(self):
     '''
     Total calories (pixelel values) in the meal.
     '''
@@ -65,36 +63,33 @@ class Meal(object):
   def clamp(self):
     '''
     Change state of meal from served to consumed.
-    Meal consumed, in range [0, mouth_size]
-    I can only eat so much, and no more than is available.
+    Automata should only eat so much, and no more than is available.
     
     Might better be called chomp (or limit high).
     Responsibility:
-    - know size of mouth (how much food it will hold)
+    - know calories of mouth (how much each portion should be)
     
     !!! If we do clamp, return a copy.  Else return self.
     Assert a meal and its clamp are read only subsequently.
     '''
-    if self.size() > config.mealCalories:
-      # total size greater than clamp implies might exist some portion greater than clamp
-      result = self._clampPortions()
+    if self.calories() > config.mealCalories:
+      # total calories greater than clamp implies might exist some portion greater than clamp
+      self._clampPortions()
     else:
-      # total size less than clamp implies all portions less than clamp
-      result = self
+      # total calories less than clamp implies all portions less than clamp
+      pass
     # assert each portion: result >= 0 and result <= config.mealCalories
-    return result
+
   
   
   def _clampPortions(self):
     '''
-    Copy of self with all portions AND essentialAmount clamped.
+    Clamp all portions AND essentialAmount.
     '''
-    result = deepcopy(self)
-    for portion in result.portions:
+    for portion in self.portions:
       portion.amount = min(portion.amount, config.mealCalories)
       
-    result.essentialAmount = min(result.essentialAmount, config.mealCalories)
-    return result
+    self.essentialAmount = min(self.essentialAmount, config.mealCalories)
   
   # TODO resolve portionCalories versus mealCalories
   
@@ -113,12 +108,9 @@ class Meal(object):
     return result
   
   
-  def amount(self):
-    '''
-    Optimization.
-    
-    !!! Requires meal has a single portion, i.e. for SinglePixelMouth
-    '''
+  def singlePortionAmount(self):
+    ''' Optimization for SinglePixelMouth. '''
+    assert len(self.portions) == 1
     return self.portions[0].amount
   
   
