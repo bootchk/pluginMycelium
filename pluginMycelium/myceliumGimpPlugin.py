@@ -1,4 +1,7 @@
 '''
+Copyright 2013 Lloyd Konneker
+License: GPLv3
+
 Main of Gimp plugin
 '''
 
@@ -49,7 +52,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   # After config is set, specialize Automata class with user's choice of mouth
   Automata.setMouth(config.grain, food)
   
-  # output images out
+  # output images
   outputPixmap, outputImage = createOutImagePixmap(image, drawable)
   artifacts = Artifacts(outputPixmap) # wrap pixmap, consider it artifact
   
@@ -61,6 +64,7 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   field=Field(automataFactory=AutomataFactory(Automata, bpp=outputPixmap.bpp), food=food, artifacts=artifacts, frame=frame)
   field.populate()
   
+  # The main object, having most other objects
   simulator = AutomataSimulator(frame=frame, field=field)
   simulator.simulate()
   simulator.flush()
@@ -69,9 +73,8 @@ def myceliumGimpPlugin(image, drawable, startPattern, maxPopulation, squirminess
   #print("plugin done")
   
   '''
-  No clean up: we only created one image that user will receive.  
+  No GIMP clean up: we only created one image that user will receive.  
   Output Pixmap was flushed.
-  Both in and out Pixmap get garbage collected.
   '''
   
   
@@ -81,18 +84,17 @@ Much of what follows is about image mode.
 It is possible for the plugin to produce only grayscale.
 (And that was the original design.)
 And that is probably the most common use case.
-And a user could use a grayscale plugin to render in colors by decompose, execute, recompose on color channels.
+And a user could, for many effects, use a grayscale plugin to render in colors by decompose, execute, recompose on color channels.
 So this is largely for user convenience.
 
 Except that certain effects e.g. 'colored worms but only the top worm displays' (compose=ownership)
-might not be easily doable by a user with only a grayscale plugin.
-And other effects might not be doable.
+might not be doable by a user with only a grayscale plugin.
 '''
   
 def createInputPixmap(image):
   '''
   Create a pixmap according to settings.
-  But we ignore any selection.
+  But we ignore any selection and alpha.
   '''
   if isPluginModeGray(image):
     result = createGrayPixmapFromInImage(image)
@@ -103,7 +105,7 @@ def createInputPixmap(image):
     
 def isPluginModeGray(image):
   '''
-  Do user's settings and input image force mode of Mycelium plugin to 'color'
+  Do user's settings and input image force mode of Mycelium plugin to 'color'?
   '''
   if config.renderToGray:
     result = True
@@ -111,7 +113,7 @@ def isPluginModeGray(image):
     if image.base_type == RGB:
       result = False
     else:
-      # Despite user's choice of rendreturnerToGray==False, image is already GRAY or INDEXED and can only be rendered GRAY
+      # Despite user's choice of renderToGray==False, image is already GRAY or INDEXED and can only be rendered GRAY
       result = True
   return result
   

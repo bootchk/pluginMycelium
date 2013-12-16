@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 
 '''
+Copyright 2013 Lloyd Konneker
+License: GPLv3
+
 For dev in Eclipse: in proj properties>PyDev PYTHONPATH>External libraries, add: /usr/lib/Gimp/2.0/Python
 '''
-
-
 from gimpfu import *
 
 
 def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent, renderToGray, 
-               squirminess, greedy, exhaustion, 
-               mealCalories, burnCalories, reservesToDivide,
-               compose, grain ):
+               squirminess, greedy, exhaustion,
+               grain, compose,
+               mealCalories, burnCalories, reservesToDivide
+               ):
   ''' 
   Glue to code in a Python package in same directory as this. 
   (Keep plugin code separate from this wrapper code.
@@ -26,7 +28,7 @@ def pluginMain(image, drawable, startPattern, maxPopulation, terminationPercent,
 register(
         "python_fu_mycelium",
         "Make new image rendered by moving automata, feeding on the original.",
-        "Make new image rendered by moving automata, feeding on the original.",
+        "Selection and alpha are ignored.",
         "Lloyd Konneker",
         "Lloyd Konneker",
         "2013",
@@ -37,33 +39,27 @@ register(
           (PF_SPINNER, "maxPopulation", "Max population:", 100, (1, 10000, 10)),
           (PF_SLIDER, "terminationPercent", "Ending percent:", 60, (1, 100, 10)),
           (PF_TOGGLE, "renderToGray",   "Mode to gray:", 1),
-          (PF_OPTION, "squirminess","Myce squirm:", 0, ["Relaxed","Curly","Kinky","Plodding"]),
-          (PF_TOGGLE, "greedy",   "Myce greedy:", 0),
-          (PF_OPTION, "exhaustion","Myce exhausted:", 1, ["Die","Migrate"]),
-          (PF_SLIDER, "mealCalories", "Myce max daily intake:", 26, (1, 255, 10)),
-          (PF_SLIDER, "burnCalories", "Myce daily burn:", 24, (1, 255, 10)),
-          (PF_SLIDER, "reservesToDivide", "Myce divide on reserves of:", 13, (1, 255, 10)),
-          (PF_OPTION, "compose", "Deposit:", 0, ['Pixelel adding', 
+          (PF_OPTION, "squirminess","Myce squirm:", 0, ["Relaxed","Curly","Kinky","Plodding", "Unbiased"]),
+          (PF_TOGGLE, "greedy",   "Myce are greedy:", 0),
+          (PF_OPTION, "exhaustion","Myce, when exhausted:", 1, ["Die","Migrate"]),
+          (PF_OPTION, "grain", "Myce feed:", 0, ['Small, one pixelel',
+                                            'Wide, channel swath',
+                                            "Deep, pixel's pixelels",
+                                            ]),
+          (PF_OPTION, "compose", "Myce deposit:", 0, ['Pixelel adding', 
                                                  'Channel funneling', 
                                                  'Channel maxing', 
                                                  'Channel owning',
                                                  'All pixelels adding',
                                                  'All pixelels owning']),
-          (PF_OPTION, "grain", "Feed:", 0, ['Small, one pixelel',
-                                            'Wide, channel swath',
-                                            "Deep, pixel's pixelels",
-                                            ])
+          (PF_SLIDER, "mealCalories", "Myce max daily intake:", 26, (1, 255, 10)),
+          (PF_SLIDER, "burnCalories", "Myce daily burn:", 24, (1, 255, 10)),
+          (PF_SLIDER, "reservesToDivide", "Myce divide on reserves of:", 13, (1, 255, 10)),
         ],
         [],
         pluginMain)
 
-#(PF_RADIO, "startPattern", "Starting field:", 1, (("Centered", 0), ("Uniform", 1))), 
-#(PF_RADIO, "exhaustion", "Exhaustion:", 1, (("Perish", 0), ("Migrate", 1), )),
-#(PF_RADIO, "squirminess", "Squirminess:", 0, (("Relaxed", 0), ("Curly", 1), ("Kinky", 2))),
 
-
-# Testing main
-##def main():
-##  myceliumGimpPlugin(1, 2, 3)
   
 main()  # Call Gimp plugin main
+

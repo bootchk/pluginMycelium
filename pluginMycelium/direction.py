@@ -1,4 +1,6 @@
 '''
+Copyright 2103 Lloyd Konneker
+License: GPLv3
 '''
 import random
 
@@ -46,8 +48,10 @@ class Direction(object):
       result = [1, -1] # Curly, always turn, but slightly
     elif squirminess == 2:
       result = [-2, 0, 2] # Kinky, hard turn or straight
-    else:
+    elif squirminess == 3:
       result = [-1, 0, 1, 4]  # Plodding: relaxed or reverse
+    else:
+      result = [-4, -3, -2, -1, 0, 1, 2, 3]  # Unbiased: any direction (but not a None direction.)
     # [-2, -1, 0, 1, 2]
     Direction.squirminess = result
   

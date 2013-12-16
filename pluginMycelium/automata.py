@@ -1,4 +1,6 @@
 '''
+Copyright 2013 Lloyd Konneker
+License: GPLv3
 '''
 import random
 from copy import copy

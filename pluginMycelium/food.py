@@ -96,9 +96,6 @@ class Food(object):
     #print("Eats", self._eatenAmount, "terminal", self._terminalEatenAmount)
     return self._eatenAmount > self._terminalEatenAmount
   
-    ## TODO this is not guaranteed to terminate
-    ## return self.eatenAmount > ( self.places * 1 )
-  
   
   def eatenAmount(self):
     ''' How much food has been eaten by all automata, so far. '''
