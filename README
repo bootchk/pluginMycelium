@@ -6,7 +6,7 @@ Copyright 2013 Lloyd Konneker
 Licensed under GPLv3
 
 
-This is work in progress.  It works but has a few bugs.  Development is on-going.
+This is a beta release: fully working, but it probably has a few bugs and changes might still occur. 
 
 
 About
@@ -36,15 +36,15 @@ Ignores the selection and renders the entire input image.
 Artistic Effects
 ----------------
 
-The effects can be extremely varied, depending on the parameters.
-
-Typical effects:
+The effects can be extremely varied, depending on the parameters.  Typical effects:
 
 Add grain.  Reduce the resolution of the image.  Similar to microbes eating the chemicals of a traditional photograph.
 
 Render artistically.  Similar to an artist manually scribbling with a drawing instrument.
 
-Tinting and colorization.
+Tint, colorize, or texturize.
+
+Mask.
 
 
 References
@@ -153,10 +153,16 @@ Myce squirm: the direction a myce moves:
 - Curly: slightly left or right ahead, but never straight ahead.
 - Kinky: relaxed or hard left or right
 - Plodding: relaxed or straight back.
+- Unbiased: in any direction (but always moving)
+- Circling: forward or to the left
 
 Myce are greedy: whether a myce moves to a pixel with more food or randomly chooses from pixels in it's squirm range.
 
 Myce, when exhausted: what happens when a myce has no reserves and finds no food.
+
+Myce feed: how a myce consumes values of pixelels around its location.  See below.
+
+Myce deposit: how a myce deposits: how a meal (what it fed upon) is composed with what was deposited earlier (by itself, or by other myce.)  See below.
 
 Myce max daily intake: how much food a myce attempts to eat.
 
@@ -164,21 +170,18 @@ Myce daily burn: how much food or reserves are consumed each period.
 
 Myce divide on reserves of: how much reserves cause a myce to divide (splitting its reserves with it's twin.)
 
-Feed: how a myce consumes values of pixelels around its location.  See below.
-
-Deposit: how a myce deposits: how a meal (what it fed upon) is composed with what was deposited earlier (by itself, or by other myce.)  See below.
 
 
 Feed choices
 ------------
 
-Feed choice is similar to 'mouth shape.'  Feed choices affect the graininess or granularity, but can have other effects, when combined with deposit choices.
+Feed choice is similar to 'mouth shape.'  Feed choices affect the grain or granularity, but can have other effects, when combined with deposit choices.
 
 Small, one pixelel: a myce eats one pixelel at its location, in its channel (remember, a myce is specialized to a channel.)  Least grain.
 
 Wide, channel swath: a myce eats a swath of pixelelels (of the same channel) from a neighborhood of pixels, instead of just one pixelel.  If 'Greedy' is also chosen, this tends to keep myce separated and non-crossing.
 
-Deep, pixel's pixelels: a myce eats all channels of the pixel at its location.  A myce still is specialized to one channel, but in this case it only affects how it moves and deposits.  For example, a greedy myce might move towards red, but eat RGB, and deposit only red.  Same as Small if 'Mode to gray' is Yes.
+Deep, pixel's pixelels: a myce eats all channels of the pixel at its location.  A myce still is specialized to one channel, but in this case its specialty only affects how it moves and deposits.  For example, a greedy myce might move towards red, but eat RGB, and deposit only red.  Same as Small if 'Mode to gray' is Yes.
 
 
 Deposit choices
@@ -213,12 +216,15 @@ Myce currently deposit RGB or GRAY pixelel values on a black background.  The pl
 
 (I'm still exploring whether an 'Invert' parameter and a subtractive compose mode would offer novel effects.  For example: Mycelium to 80% complete does not give the same result as Invert, Mycelium to 20%, Invert.)
 
+
 TODO
 ----
 
-Compose by pixel: myce are specialized to a pixelel, but they eat and deposit all the pixelels of the pixel they are on, in the amount of their specialized pixelel.
+Migrate in the myce's direction, instead of in any direction.
 
 Crossing: myce won't cross each other's trails.
 
 Slime: myce leave a trail even if not eating.
+
+Choices for swath shape: currently a swath is three pixels across the direction of a myce.
 

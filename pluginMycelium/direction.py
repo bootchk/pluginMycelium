@@ -50,8 +50,11 @@ class Direction(object):
       result = [-2, 0, 2] # Kinky, hard turn or straight
     elif squirminess == 3:
       result = [-1, 0, 1, 4]  # Plodding: relaxed or reverse
-    else:
+    elif squirminess == 4:
       result = [-4, -3, -2, -1, 0, 1, 2, 3]  # Unbiased: any direction (but not a None direction.)
+    else:
+      result = [-2, -1, 0]  # Circling, straight or left
+      
     # [-2, -1, 0, 1, 2]
     Direction.squirminess = result
   

@@ -39,7 +39,7 @@ register(
           (PF_SPINNER, "maxPopulation", "Max population:", 100, (1, 10000, 10)),
           (PF_SLIDER, "terminationPercent", "Ending percent:", 60, (1, 100, 10)),
           (PF_TOGGLE, "renderToGray",   "Mode to gray:", 1),
-          (PF_OPTION, "squirminess","Myce squirm:", 0, ["Relaxed","Curly","Kinky","Plodding", "Unbiased"]),
+          (PF_OPTION, "squirminess","Myce squirm:", 0, ["Relaxed","Curly","Kinky","Plodding", "Unbiased", "Circling"]),
           (PF_TOGGLE, "greedy",   "Myce are greedy:", 0),
           (PF_OPTION, "exhaustion","Myce, when exhausted:", 1, ["Die","Migrate"]),
           (PF_OPTION, "grain", "Myce feed:", 0, ['Small, one pixelel',
