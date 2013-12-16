@@ -72,7 +72,10 @@ class Field(object):
     '''
     return self.food.isMostlyGone() or self.stagnator.isStagnant(newValue=self.food.eatenAmount())
   
-  
+  def perunitDone(self):
+    ''' Float in range [0, 1.0] of completeness (not of image consumed, but of amount user wants to consume.) '''
+    return self.food.perunitDone()
+    
   
   def populate(self):
     '''

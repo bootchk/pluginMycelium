@@ -96,6 +96,9 @@ class Food(object):
     #print("Eats", self._eatenAmount, "terminal", self._terminalEatenAmount)
     return self._eatenAmount > self._terminalEatenAmount
   
+  def perunitDone(self):
+    return self._eatenAmount / self._terminalEatenAmount * 1.0  # Integer division coerce to float
+    
   
   def eatenAmount(self):
     ''' How much food has been eaten by all automata, so far. '''
